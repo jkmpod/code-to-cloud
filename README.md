@@ -1,5 +1,9 @@
 # Code to Cloud — Developer Field Guide
 
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub Pages](https://img.shields.io/badge/hosted-GitHub%20Pages-brightgreen)](https://jkmpod.github.io/code-to-cloud)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)](CONTRIBUTING.md)
+
 An interactive, scrollytelling tutorial covering everything a novice developer needs before their first production deployment on Google Cloud Platform.
 
 **🌐 Live site:** `https://jkmpod.github.io/code-to-cloud`
@@ -55,7 +59,7 @@ This repo uses **GitHub Actions** to automatically deploy to GitHub Pages on eve
 
 Every push to `main` will trigger a deploy. The live URL will be:
 ```
-https://<your-username>.github.io/<repo-name>
+https://jkmpod.github.io/code-to-cloud
 ```
 
 ### Manual deploy (alternative)
@@ -70,6 +74,9 @@ If you prefer not to use Actions, you can also set Source to **Deploy from a bra
 code-to-cloud/
 ├── index.html              # The entire tutorial (single-file)
 ├── README.md               # This file
+├── LICENSE                 # MIT License
+├── CONTRIBUTING.md         # How to contribute
+├── CONTRIBUTORS.md         # Credits and acknowledgements
 ├── .gitignore              # Standard web project ignores
 └── .github/
     └── workflows/
@@ -90,9 +97,27 @@ A few things worth updating before sharing with your developers:
 
 ## Contributing
 
-1. Create a branch: `git checkout -b fix/update-checklist`
-2. Make your changes to `index.html`
-3. Open a pull request — exactly as the tutorial teaches!
+Contributions are welcome! Whether it's fixing a typo, updating a resource link, or adding a new chapter — all improvements are appreciated.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow, branch naming conventions, and commit message format.
+
+A short version:
+
+```bash
+git checkout -b fix/your-change
+# make your changes
+git commit -m "fix: describe what you changed"
+git push origin fix/your-change
+# open a Pull Request on GitHub
+```
+
+See [CONTRIBUTORS.md](CONTRIBUTORS.md) for a list of everyone who has contributed to this project.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE) — you are free to use, modify, and distribute it, provided the copyright notice is retained.
 
 ---
 

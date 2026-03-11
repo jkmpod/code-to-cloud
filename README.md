@@ -18,6 +18,8 @@ An interactive, scrollytelling tutorial covering everything a novice developer n
 | 02 | Git & GitHub — concepts, branching, pull requests |
 | 03 | Writing good commit messages |
 | 04 | Docker & containerisation |
+| 04b | Docker Compose — running multi-container apps locally and in deployments |
+| 05 | Networking basics — DNS, ports, firewalls, VPC |
 | 05 | Networking basics — DNS, ports, firewalls, VPC |
 | 06 | Google Cloud Platform — the 8 services you'll actually use |
 | 07 | CI/CD with Cloud Build |

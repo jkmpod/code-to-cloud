@@ -222,6 +222,7 @@ hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
     <button class="nav-ch" onclick="jump('s2')">02 Git</button>
     <button class="nav-ch" onclick="jump('s3')">03 Commits</button>
     <button class="nav-ch" onclick="jump('s4')">04 Docker</button>
+    <button class="nav-ch" onclick="jump('s4b')">04b Compose</button>
     <button class="nav-ch" onclick="jump('s5')">05 Networking</button>
     <button class="nav-ch" onclick="jump('s6')">06 GCP</button>
     <button class="nav-ch" onclick="jump('s7')">07 CI/CD</button>
@@ -574,6 +575,127 @@ hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
       <a class="res-link" href="https://labs.play-with-docker.com" target="_blank" rel="noopener">Play with Docker</a>
       <a class="res-link" href="https://docs.docker.com/get-started" target="_blank" rel="noopener">Docker Documentation</a>
       <a class="res-link" href="https://docker-curriculum.com" target="_blank" rel="noopener">Docker Tutorial</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 04b DOCKER COMPOSE -->
+<section id="s4b">
+<div class="inner">
+  <div class="ch-label"><span class="ch-num">04b</span><span class="ch-rule"></span></div>
+  <h2>Docker Compose:<br>running <em>multi-container apps</em></h2>
+  <p class="lede">Most real apps aren't a single container — they're a web server, an API, and a database running together. Docker Compose defines and starts all of them with one command.</p>
+
+  <div class="callout ci">
+    <div class="ct">💡 The core idea</div>
+    Instead of running <code>docker run</code> three times and manually wiring containers together, you describe your entire app stack in a single <code>docker-compose.yml</code> file. Compose handles the networking automatically.
+  </div>
+
+  <div class="pipeline">
+    <div class="pn hl"><div class="pi">🌐</div><div class="pl">Frontend</div><div class="ps">:3000</div></div>
+    <div class="pa">↓</div>
+    <div class="pn hl"><div class="pi">⚙️</div><div class="pl">Backend API</div><div class="ps">:5000</div></div>
+    <div class="pa">↓</div>
+    <div class="pn hl"><div class="pi">🗄️</div><div class="pl">Database</div><div class="ps">:5432</div></div>
+  </div>
+  <p style="text-align:center;font-family:var(--mono);font-size:12px;color:var(--ink-3);margin-top:-16px;margin-bottom:28px">All defined in: docker-compose.yml</p>
+
+  <div class="wiz">
+    <div class="wsteps">
+      <button class="wsb active" onclick="wiz('dc',0)"><span class="wsn">1</span>docker-compose.yml</button>
+      <button class="wsb" onclick="wiz('dc',1)"><span class="wsn">2</span>Local Dev</button>
+      <button class="wsb" onclick="wiz('dc',2)"><span class="wsn">3</span>In Deployments</button>
+    </div>
+
+    <div id="dc-0" class="wp active">
+      <div class="wptag">The config file</div>
+      <div class="wptitle">Anatomy of a docker-compose.yml</div>
+      <div class="wpbody">Each entry under <code>services</code> is a container. Compose wires them together on a shared private network automatically — they reference each other by service name.</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">docker-compose.yml</div></div>
+        <div class="tbody">
+          <div><span class="tk2">version:</span> <span class="tv">'3.9'</span></div>
+          <div><span class="tk2">services:</span></div>
+          <br>
+          <div><span class="tc">  # Your application</span></div>
+          <div><span class="tcmd">  web:</span></div>
+          <div><span class="tcmd">    build: .</span></div>
+          <div><span class="tcmd">    ports:</span></div>
+          <div><span class="tcmd">      - <span class="tv">"5000:5000"</span></span></div>
+          <div><span class="tcmd">    environment:</span></div>
+          <div><span class="tcmd">      - DATABASE_URL=postgresql://db:5432/myapp</span></div>
+          <div><span class="tcmd">    depends_on:</span></div>
+          <div><span class="tcmd">      - db</span></div>
+          <br>
+          <div><span class="tc">  # The database — no Dockerfile needed, uses a public image</span></div>
+          <div><span class="tcmd">  db:</span></div>
+          <div><span class="tcmd">    image: <span class="tv">postgres:15</span></span></div>
+          <div><span class="tcmd">    environment:</span></div>
+          <div><span class="tcmd">      - POSTGRES_DB=myapp</span></div>
+          <div><span class="tcmd">      - POSTGRES_PASSWORD=<span class="tw">use-secret-manager-in-prod</span></span></div>
+          <div><span class="tcmd">    volumes:</span></div>
+          <div><span class="tcmd">      - db_data:/var/lib/postgresql/data</span></div>
+          <br>
+          <div><span class="tk2">volumes:</span></div>
+          <div><span class="tcmd">  db_data:</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="dc-1" class="wp">
+      <div class="wptag">Local development</div>
+      <div class="wptitle">The daily Compose workflow</div>
+      <div class="wpbody">Three commands cover 90% of your day-to-day usage. Compose rebuilds only what changed, so subsequent starts are fast.</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">bash</div></div>
+        <div class="tbody">
+          <div><span class="tc"># Start all containers (add -d to run in background)</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">docker compose up --build</span></div>
+          <div><span class="tok">✓ Container web started on :5000</span></div>
+          <div><span class="tok">✓ Container db  started on :5432</span></div>
+          <br>
+          <div><span class="tc"># Stop everything</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">docker compose down</span></div>
+          <br>
+          <div><span class="tc"># View logs from all containers at once</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">docker compose logs -f</span></div>
+          <br>
+          <div><span class="tc"># Run a one-off command inside a container (e.g. DB migration)</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">docker compose run web python manage.py migrate</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="dc-2" class="wp">
+      <div class="wptag">In deployments</div>
+      <div class="wptitle">Compose in production — what to know</div>
+      <div class="wpbody">Compose is excellent for local development. In production on GCP, the same concepts apply but the tooling shifts.</div>
+      <table class="ctable">
+        <thead><tr><th>Context</th><th>Use Compose?</th><th>GCP equivalent</th></tr></thead>
+        <tbody>
+          <tr><td>Local development</td><td><span class="tag tg">✅ Yes</span></td><td>—</td></tr>
+          <tr><td>Single-server staging</td><td><span class="tag ta">⚠️ Possible</span></td><td>Compute Engine + Compose</td></tr>
+          <tr><td>Production (scaled)</td><td><span class="tag tr">❌ No</span></td><td>Cloud Run or GKE</td></tr>
+        </tbody>
+      </table>
+      <div class="callout cw">
+        <div class="ct">⚠️ Don't put database passwords in docker-compose.yml</div>
+        Use a <code>.env</code> file locally (and add it to <code>.gitignore</code>). In production, always use <strong>GCP Secret Manager</strong> — never hardcode credentials in any config file.
+      </div>
+    </div>
+  </div>
+
+  <div class="vid-section">
+    <div class="vid-label">Watch: Docker Compose Tutorial</div>
+    <div class="vid-wrap"><iframe src="https://www.youtube.com/embed/Qw9zlE3t8Ko" allowfullscreen loading="lazy"></iframe></div>
+  </div>
+  <div class="res-section">
+    <div class="res-label">📚 Additional Resources</div>
+    <div class="res-links">
+      <a class="res-link" href="https://docs.docker.com/compose/" target="_blank" rel="noopener">Docker Compose Documentation</a>
+      <a class="res-link" href="https://www.docker.com/blog/docker-compose-vs-dockerfile/" target="_blank" rel="noopener">Compose vs Dockerfile</a>
+      <a class="res-link" href="https://github.com/docker/awesome-compose" target="_blank" rel="noopener">Example Compose Apps</a>
     </div>
   </div>
 </div>

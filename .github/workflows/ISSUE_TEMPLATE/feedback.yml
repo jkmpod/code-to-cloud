@@ -1,0 +1,65 @@
+name: Tutorial Feedback
+description: Share feedback on a chapter, a concept, or the tutorial overall
+title: "[Feedback] "
+labels: ["feedback"]
+body:
+  - type: dropdown
+    id: chapter
+    attributes:
+      label: Which chapter does your feedback relate to?
+      options:
+        - "01 — Why it matters"
+        - "02 — Git & GitHub"
+        - "03 — Good commits"
+        - "04 — Docker"
+        - "04b — Docker Compose"
+        - "05 — Networking"
+        - "06 — Google Cloud (GCP)"
+        - "07 — CI/CD"
+        - "08 — Pre-deploy checklist"
+        - "Overall / General"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type of feedback
+      options:
+        - "Something is unclear or confusing"
+        - "Something is incorrect or outdated"
+        - "A concept or step is missing"
+        - "A resource link is broken"
+        - "General suggestion"
+    validations:
+      required: true
+
+  - type: textarea
+    id: feedback
+    attributes:
+      label: Your feedback
+      description: Be as specific as possible — what did you read, what did you expect, what confused you?
+      placeholder: "e.g. In Chapter 04, the explanation of Docker layers doesn't make it clear why order of COPY commands matters for caching..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement (optional)
+      description: If you have a specific fix or addition in mind, describe it here.
+      placeholder: "e.g. Add a diagram showing how Docker rebuilds only changed layers..."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: experience
+    attributes:
+      label: Your experience level
+      description: Helps us calibrate the feedback
+      options:
+        - "Complete beginner — first time seeing these concepts"
+        - "Some exposure — have used one or two of these tools"
+        - "Intermediate — reviewing to fill gaps"
+    validations:
+      required: true

@@ -210,6 +210,11 @@ hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
 .res-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;background:var(--accent-l);border:1px solid rgba(26,115,232,.2);border-radius:6px;padding:7px 14px;transition:all .2s}
 .res-link:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
 .res-link::after{content:'↗';font-size:10px;opacity:.6}
+
+/* FEEDBACK BUTTON */
+.feedback-btn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;font-family:var(--sans);font-size:14px;font-weight:600;padding:12px 24px;border-radius:8px;text-decoration:none;transition:all .2s;margin-top:32px}
+.feedback-btn:hover{background:var(--accent)}
+.feedback-btn .fb-icon{font-size:16px}
 </style>
 </head>
 <body>
@@ -922,6 +927,9 @@ hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
   </ul>
 
   <div id="dbanner" class="dbanner">🎉 &nbsp; All checks passed — you're ready to ship.</div>
+  <a class="feedback-btn" href="https://github.com/jkmpod/code-to-cloud/issues/new?template=feedback.yml" target="_blank" rel="noopener">
+  <span class="fb-icon">💬</span> Give feedback on this tutorial
+</a>
 
   <div class="vid-section">
     <div class="vid-label">Watch: Deploying to Production</div>
@@ -951,6 +959,9 @@ hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
       <div class="fb">⚙️ CI/CD · Cloud Build</div>
       <div class="fb">✅ Pre-Deploy Checklist</div>
     </div>
+    <a class="feedback-btn" href="https://github.com/jkmpod/code-to-cloud/issues/new?template=feedback.yml" target="_blank" rel="noopener">
+  <span class="fb-icon">💬</span> Give feedback on this tutorial
+</a>
     <p class="fn">code-to-cloud · developer field guide · gcp edition</p>
   </div>
 </footer>

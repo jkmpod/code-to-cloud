@@ -18,7 +18,8 @@ Contributions of all sizes are recognised here — from fixing a typo to adding 
 
 | Name | GitHub | Contribution |
 |------|--------|--------------|
-| — | — | Be the first to contribute! |
+| Claude (Anthropic) | [@anthropics](https://github.com/anthropics) | Initial tutorial design and content — HTML, CSS, all chapter content, wiki pages, CLAUDE.md, and repo scaffolding |
+| — | — | Be the first human to contribute! |
 
 ---
 
@@ -38,3 +39,4 @@ This tutorial draws on ideas and structure from:
 - [The Twelve-Factor App](https://12factor.net) — production deployment principles
 - [Google SRE Book](https://sre.google/sre-book/) — reliability and deployment practices
 - [Conventional Commits](https://www.conventionalcommits.org) — commit message standards
+- [Claude by Anthropic](https://claude.ai) — agentic AI used for initial content development, guided by the design and pedagogical principles documented in this wiki

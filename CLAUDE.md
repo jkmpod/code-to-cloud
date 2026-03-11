@@ -196,6 +196,7 @@ Keep labels short — two or three words maximum. The nav overflows and hides on
 - **Do not add new font imports** — the three fonts are final.
 - **Do not add dark mode, animations, or new colour schemes** — these are out of scope.
 - **Do not write comprehensive reference content** — this is a first mental model. If the content reads like documentation, it is too detailed. Link to the official docs instead.
+- **Do not add checklist items for tools not covered in a chapter** — every item in Chapter 08 must map to a concept taught somewhere in the tutorial. If a tool appears in the checklist but has no chapter, add the chapter first.
 - **Do not invent terminal output** — every `<span class="tok">` or `<span class="to">` line must reflect what the real command actually outputs.
 
 ---
@@ -214,6 +215,7 @@ Before proposing any generated chapter or edit, verify:
 - [ ] The nav button has been added in the correct sequence position
 - [ ] The `README.md` What's covered table has been updated
 - [ ] The section `id` and chapter number are consistent
+- [ ] Any new concept that has a lint check implication has a corresponding item added to the Chapter 08 pre-deploy checklist
 
 ---
 

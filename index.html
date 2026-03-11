@@ -1087,6 +1087,13 @@ hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
     <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">All credentials stored in <strong>GCP Secret Manager</strong> — not in code or config files</div></li>
   </ul>
 
+  <div class="cslabel">🔍 Code Quality</div>
+  <ul class="cklist">
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt"><code>ruff check .</code> passes with no errors (Python projects)</div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt"><code>npx biome ci .</code> passes with no errors (JS/TS projects)</div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">No secrets, tokens, or hardcoded credentials flagged by the linter's security ruleset</div></li>
+  </ul>
+
   <div class="cslabel">☁️ GCP Deployment</div>
   <ul class="cklist">
     <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">App was deployed and tested on <strong>staging</strong> before touching production</div></li>

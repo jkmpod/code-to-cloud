@@ -2,7 +2,7 @@
 
 An interactive, scrollytelling tutorial covering everything a novice developer needs before their first production deployment on Google Cloud Platform.
 
-**🌐 Live site:** `https://<your-username>.github.io/code-to-cloud`
+**🌐 Live site:** `https://jkmpod.github.io/code-to-cloud`
 
 ---
 
@@ -29,7 +29,7 @@ No build step needed — it's a single static HTML file.
 
 ```bash
 # Clone the repo
-git clone https://github.com/<your-username>/code-to-cloud.git
+git clone https://github.com/jkmpod/code-to-cloud.git
 cd code-to-cloud
 
 # Open directly in your browser

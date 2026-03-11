@@ -230,6 +230,7 @@ hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
     <button class="nav-ch" onclick="jump('s4b')">04b Compose</button>
     <button class="nav-ch" onclick="jump('s5')">05 Networking</button>
     <button class="nav-ch" onclick="jump('s6')">06 GCP</button>
+    <button class="nav-ch" onclick="jump('s6b')">06b Linting</button>
     <button class="nav-ch" onclick="jump('s7')">07 CI/CD</button>
     <button class="nav-ch" onclick="jump('s8')">08 Checklist</button>
   </div>
@@ -805,6 +806,173 @@ hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
     <div class="res-links">
       <a class="res-link" href="https://cloud.google.com/docs" target="_blank" rel="noopener">Google Cloud Documentation</a>
       <a class="res-link" href="https://cloudskillsboost.google" target="_blank" rel="noopener">Google Cloud Skills Boost</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 06b CODE QUALITY -->
+<section id="s6b">
+<div class="inner">
+  <div class="ch-label"><span class="ch-num">06b</span><span class="ch-rule"></span></div>
+  <h2>Code quality:<br><em>catch problems before CI does</em></h2>
+  <p class="lede">Linters analyse your code automatically — catching bugs, enforcing style, and flagging security issues before a single line reaches your teammates or your cloud.</p>
+
+  <div class="callout ci">
+    <div class="ct">💡 Why lint before committing</div>
+    A linting error caught on your laptop takes seconds to fix. The same error caught in a CI pipeline means a failed build, a re-push, and a wasted pipeline run. Shift the check left — run the linter locally first.
+  </div>
+
+  <div class="pipeline">
+    <div class="pn"><div class="pi">📝</div><div class="pl">Write Code</div><div class="ps">locally</div></div>
+    <div class="pa">→</div>
+    <div class="pn hl"><div class="pi">🔍</div><div class="pl">Run Linter</div><div class="ps">Ruff / Biome</div></div>
+    <div class="pa">→</div>
+    <div class="pn hl"><div class="pi">🔧</div><div class="pl">Fix Issues</div><div class="ps">locally</div></div>
+    <div class="pa">→</div>
+    <div class="pn"><div class="pi">✅</div><div class="pl">Commit</div><div class="ps">clean code</div></div>
+    <div class="pa">→</div>
+    <div class="pn"><div class="pi">⚙️</div><div class="pl">CI passes</div><div class="ps">first time</div></div>
+  </div>
+
+  <div class="wiz">
+    <div class="wsteps">
+      <button class="wsb active" onclick="wiz('lnt',0)"><span class="wsn">1</span>Ruff (Python)</button>
+      <button class="wsb" onclick="wiz('lnt',1)"><span class="wsn">2</span>Biome (JS/TS)</button>
+      <button class="wsb" onclick="wiz('lnt',2)"><span class="wsn">3</span>In CI/CD</button>
+    </div>
+
+    <div id="lnt-0" class="wp active">
+      <div class="wptag">Python</div>
+      <div class="wptitle">Ruff — linter and formatter in one</div>
+      <div class="wpbody">Ruff replaces Flake8, isort, and pyupgrade with a single tool written in Rust. It runs roughly 100x faster than the tools it replaces and is configured from <code>pyproject.toml</code>.</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">bash</div></div>
+        <div class="tbody">
+          <div><span class="tc"># Install</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">pip install ruff</span></div>
+          <br>
+          <div><span class="tc"># Check for lint errors across the whole project</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">ruff check .</span></div>
+          <div><span class="to">app.py:12:5: F401 'os' imported but unused</span></div>
+          <div><span class="to">app.py:34:1: E501 Line too long (92 > 88)</span></div>
+          <br>
+          <div><span class="tc"># Auto-fix everything that can be fixed safely</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">ruff check . --fix</span></div>
+          <br>
+          <div><span class="tc"># Format code (replaces Black)</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">ruff format .</span></div>
+          <div><span class="tok">✓ 6 files reformatted</span></div>
+        </div>
+      </div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">pyproject.toml</div></div>
+        <div class="tbody">
+          <div><span class="tk2">[tool.ruff]</span></div>
+          <div><span class="tcmd">line-length = <span class="tv">88</span></span></div>
+          <div><span class="tcmd">target-version = <span class="tv">"py311"</span></span></div>
+          <br>
+          <div><span class="tk2">[tool.ruff.lint]</span></div>
+          <div><span class="tc"># E/W = pycodestyle, F = pyflakes, I = isort, S = security</span></div>
+          <div><span class="tcmd">select = [<span class="tv">"E", "F", "I", "S", "W"</span>]</span></div>
+          <div><span class="tcmd">ignore = [<span class="tv">"E501"</span>]</span></div>
+        </div>
+      </div>
+      <div class="callout cw">
+        <div class="ct">⚠️ Enable the S (security) ruleset</div>
+        The <code>S</code> ruleset flags common security issues — hardcoded passwords, use of <code>eval()</code>, unsafe deserialization. It is not enabled by default. Add <code>"S"</code> to your <code>select</code> list in <code>pyproject.toml</code>.
+      </div>
+    </div>
+
+    <div id="lnt-1" class="wp">
+      <div class="wptag">JavaScript / TypeScript</div>
+      <div class="wptitle">Biome — linter and formatter for JS/TS</div>
+      <div class="wpbody">Biome replaces ESLint and Prettier with a single tool. It is configured from <code>biome.json</code> and runs significantly faster than the tools it replaces.</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">bash</div></div>
+        <div class="tbody">
+          <div><span class="tc"># Install as a dev dependency</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">npm install --save-dev @biomejs/biome</span></div>
+          <br>
+          <div><span class="tc"># Initialise config file</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">npx biome init</span></div>
+          <br>
+          <div><span class="tc"># Check for lint and format issues</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">npx biome check .</span></div>
+          <div><span class="to">src/api.ts:8:3 lint/suspicious/noConsole ━━━━</span></div>
+          <div><span class="to">  ✖ Don't use console.log in production code</span></div>
+          <br>
+          <div><span class="tc"># Auto-fix safe issues</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">npx biome check --write .</span></div>
+          <div><span class="tok">✓ 12 files fixed</span></div>
+        </div>
+      </div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">biome.json</div></div>
+        <div class="tbody">
+          <div><span class="tk2">{</span></div>
+          <div><span class="tcmd">  <span class="tk2">"$schema"</span>: <span class="tv">"https://biomejs.dev/schemas/1.9.0/schema.json"</span>,</span></div>
+          <div><span class="tcmd">  <span class="tk2">"linter"</span>: {</span></div>
+          <div><span class="tcmd">    <span class="tk2">"enabled"</span>: <span class="tv">true</span>,</span></div>
+          <div><span class="tcmd">    <span class="tk2">"rules"</span>: { <span class="tk2">"recommended"</span>: <span class="tv">true</span> }</span></div>
+          <div><span class="tcmd">  },</span></div>
+          <div><span class="tcmd">  <span class="tk2">"formatter"</span>: {</span></div>
+          <div><span class="tcmd">    <span class="tk2">"enabled"</span>: <span class="tv">true</span>,</span></div>
+          <div><span class="tcmd">    <span class="tk2">"indentStyle"</span>: <span class="tv">"space"</span>,</span></div>
+          <div><span class="tcmd">    <span class="tk2">"lineWidth"</span>: <span class="tv">100</span></span></div>
+          <div><span class="tcmd">  }</span></div>
+          <div><span class="tk2">}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="lnt-2" class="wp">
+      <div class="wptag">Automation</div>
+      <div class="wptitle">Running linters automatically in CI</div>
+      <div class="wpbody">Adding linting to your GitHub Actions workflow ensures every pull request is checked before it can be merged. A PR with lint errors is blocked automatically — no manual review needed to catch them.</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">.github/workflows/lint.yml</div></div>
+        <div class="tbody">
+          <div><span class="tk2">name:</span> <span class="tv">Lint</span></div>
+          <div><span class="tk2">on:</span> <span class="tv">[pull_request]</span></div>
+          <br>
+          <div><span class="tk2">jobs:</span></div>
+          <div><span class="tcmd">  lint-python:</span></div>
+          <div><span class="tcmd">    runs-on: ubuntu-latest</span></div>
+          <div><span class="tcmd">    steps:</span></div>
+          <div><span class="tcmd">      - uses: <span class="tv">actions/checkout@v4</span></span></div>
+          <div><span class="tcmd">      - uses: <span class="tv">actions/setup-python@v5</span></span></div>
+          <div><span class="tcmd">        with: { python-version: <span class="tv">'3.11'</span> }</span></div>
+          <div><span class="tcmd">      - name: Ruff check</span></div>
+          <div><span class="tcmd">        run: pip install ruff &amp;&amp; ruff check .</span></div>
+          <br>
+          <div><span class="tcmd">  lint-js:</span></div>
+          <div><span class="tcmd">    runs-on: ubuntu-latest</span></div>
+          <div><span class="tcmd">    steps:</span></div>
+          <div><span class="tcmd">      - uses: <span class="tv">actions/checkout@v4</span></span></div>
+          <div><span class="tcmd">      - uses: <span class="tv">actions/setup-node@v4</span></span></div>
+          <div><span class="tcmd">        with: { node-version: <span class="tv">'20'</span> }</span></div>
+          <div><span class="tcmd">      - name: Biome check</span></div>
+          <div><span class="tcmd">        run: npm ci &amp;&amp; npx biome ci .</span></div>
+        </div>
+      </div>
+      <div class="callout cs">
+        <div class="ct">✅ biome ci vs biome check</div>
+        Use <code>npx biome ci .</code> (not <code>check</code>) in pipelines — it exits with a non-zero code on any issue, which tells GitHub Actions to fail the build. The <code>check</code> command is for local use.
+      </div>
+    </div>
+  </div>
+
+  <div class="vid-section">
+    <div class="vid-label">Watch: Ruff — Python Linting & Formatting</div>
+    <div class="vid-wrap"><iframe src="https://www.youtube.com/embed/jqB_2FMeJSE" allowfullscreen loading="lazy"></iframe></div>
+  </div>
+  <div class="res-section">
+    <div class="res-label">📚 Additional Resources</div>
+    <div class="res-links">
+      <a class="res-link" href="https://docs.astral.sh/ruff/" target="_blank" rel="noopener">Ruff Documentation</a>
+      <a class="res-link" href="https://biomejs.dev/docs/" target="_blank" rel="noopener">Biome Documentation</a>
+      <a class="res-link" href="https://docs.github.com/en/actions/writing-workflows" target="_blank" rel="noopener">GitHub Actions Docs</a>
     </div>
   </div>
 </div>

@@ -83,7 +83,7 @@ Wizard structure:
 </div>
 ```
 
-The `KEY` must be unique across the entire file. Check existing keys before adding: `g` (Git), `d` (Docker), `dc` (Docker Compose).
+The `KEY` must be unique across the entire file. Check existing keys before adding: `g` (Git), `d` (Docker), `dc` (Docker Compose), `lnt` (Linting).
 
 ### Rule 4: Error prevention over error correction
 

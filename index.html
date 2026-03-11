@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code to Cloud — A Developer's Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white:   #ffffff;
+  --ink:     #111118;
+  --ink-2:   #3a3a4a;
+  --ink-3:   #767690;
+  --rule:    #e4e4ed;
+  --rule-2:  #f0f0f6;
+  --bg:      #f8f8fc;
+  --accent:  #1a73e8;
+  --accent-l:#e8f0fe;
+  --green:   #137333;
+  --green-l: #e6f4ea;
+  --amber:   #b45309;
+  --amber-l: #fef3c7;
+  --red:     #c5221f;
+  --red-l:   #fce8e6;
+  --mono:    'JetBrains Mono', monospace;
+  --serif:   'Fraunces', Georgia, serif;
+  --sans:    'Plus Jakarta Sans', system-ui, sans-serif;
+  --max:     740px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:var(--sans);background:var(--white);color:var(--ink);line-height:1.75;-webkit-font-smoothing:antialiased}
+
+/* PROGRESS */
+#rbar{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:200;width:0%;transition:width .15s linear}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule);display:flex;align-items:center;padding:0 28px;height:52px;gap:20px}
+.nav-logo{font-family:var(--serif);font-weight:700;font-size:15px;color:var(--ink);letter-spacing:-.01em;white-space:nowrap}
+.nav-logo span{color:var(--accent)}
+.nav-chs{display:flex;gap:2px;flex:1;overflow:hidden}
+.nav-ch{background:none;border:none;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);padding:4px 10px;border-radius:4px;white-space:nowrap;transition:all .2s}
+.nav-ch:hover,.nav-ch.active{color:var(--accent);background:var(--accent-l)}
+@media(max-width:680px){.nav-chs{display:none}}
+
+/* SECTIONS */
+section{padding:100px 24px 80px;border-bottom:1px solid var(--rule)}
+section:nth-child(even){background:var(--bg)}
+.inner{max-width:var(--max);margin:0 auto;opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}
+.inner.vis{opacity:1;transform:none}
+
+/* CHAPTER LABEL */
+.ch-label{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.ch-num{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.1em}
+.ch-rule{flex:1;height:1px;background:var(--rule)}
+
+/* TYPOGRAPHY */
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(52px,9vw,96px);line-height:.95;letter-spacing:-.04em;color:var(--ink)}
+h1 em{font-style:italic;color:var(--accent)}
+h2{font-family:var(--serif);font-weight:700;font-size:clamp(32px,5vw,52px);line-height:1.05;letter-spacing:-.025em;color:var(--ink);margin-bottom:16px}
+h2 em{font-style:italic;color:var(--accent)}
+h3{font-weight:700;font-size:17px;color:var(--ink);margin-bottom:8px;letter-spacing:-.01em}
+.lede{font-size:18px;color:var(--ink-2);font-weight:300;line-height:1.6;margin-bottom:40px;max-width:580px}
+p{color:var(--ink-2);margin-bottom:14px;font-size:15px}
+p:last-child{margin-bottom:0}
+
+/* HERO */
+#s0{min-height:100vh;display:flex;align-items:center;padding:80px 24px 64px;background:var(--white)}
+.hero-inner{max-width:var(--max);margin:0 auto}
+.hero-kicker{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.hero-kicker::before{content:'';width:24px;height:1px;background:var(--accent)}
+.hero-tagline{font-weight:400;font-size:15px;color:var(--ink-3);margin-top:28px;margin-bottom:28px}
+.hero-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:48px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--rule);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.dot{width:6px;height:6px;border-radius:50%}
+.db{background:var(--accent)}.dg{background:#34a853}.da{background:#fbbc04}.dr{background:#ea4335}.dt{background:#0f9d58}
+.scroll-cue{font-family:var(--mono);font-size:11px;color:var(--ink-3);display:flex;align-items:center;gap:8px;letter-spacing:.08em;text-transform:uppercase}
+.sarrow{display:inline-block;animation:bob 2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+/* PIPELINE DIAGRAM */
+.pipeline{display:flex;align-items:center;flex-wrap:wrap;gap:0;margin:32px 0}
+.pn{text-align:center;padding:14px 10px;border:1px solid var(--rule);border-radius:8px;background:var(--white);transition:all .2s;flex:1;min-width:70px}
+.pn:hover,.pn.hl{border-color:var(--accent);background:var(--accent-l)}
+.pn .pi{font-size:22px;margin-bottom:5px}
+.pn .pl{font-size:12px;font-weight:700;color:var(--ink)}
+.pn .ps{font-size:10px;color:var(--ink-3);font-family:var(--mono)}
+.pa{color:var(--ink-3);font-size:16px;padding:0 4px;flex-shrink:0;align-self:center}
+@media(max-width:560px){.pa{display:none}.pipeline{gap:8px}.pn{min-width:calc(50% - 8px);flex:none}}
+
+/* CONCEPT TABLE */
+.ctable{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:28px}
+.ctable thead th{border-bottom:2px solid var(--ink);padding:10px 14px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.ctable tbody td{padding:13px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+.ctable tbody tr:hover td{background:var(--bg)}
+
+/* TAGS */
+.tag{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:3px 8px;border-radius:4px;white-space:nowrap}
+.tb{background:var(--accent-l);color:var(--accent)}
+.tg{background:var(--green-l);color:var(--green)}
+.ta{background:var(--amber-l);color:var(--amber)}
+.tr{background:var(--red-l);color:var(--red)}
+.tk{background:var(--rule-2);color:var(--ink-2)}
+code{font-family:var(--mono);font-size:13px;background:var(--rule-2);padding:1px 6px;border-radius:4px;color:var(--ink)}
+
+/* CALLOUTS */
+.callout{border-left:3px solid;padding:16px 20px;border-radius:0 6px 6px 0;margin:24px 0;font-size:14px;line-height:1.65}
+.ct{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.ci{border-color:var(--accent);background:var(--accent-l)}.ci .ct{color:var(--accent)}
+.cw{border-color:var(--amber);background:var(--amber-l)}.cw .ct{color:var(--amber)}
+.cd{border-color:var(--red);background:var(--red-l)}.cd .ct{color:var(--red)}
+.cs{border-color:var(--green);background:var(--green-l)}.cs .ct{color:var(--green)}
+
+/* TERMINAL */
+.term{background:#1e1e2e;border-radius:10px;overflow:hidden;margin:22px 0;font-family:var(--mono);font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.tbar{background:#2a2a3e;padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.06)}
+.td{width:11px;height:11px;border-radius:50%}
+.td.r{background:#ff5f57}.td.y{background:#ffbd2e}.td.g{background:#28c840}
+.tname{margin-left:auto;font-size:11px;color:#555570;letter-spacing:.06em}
+.tbody{padding:18px 22px;line-height:2}
+.tc{color:#555570}.tp{color:#50fa7b}.tcmd{color:#f8f8f2}.to{color:#6272a4}.tok{color:#50fa7b}.tw{color:#ffb86c}.tk2{color:#ff79c6}.tv{color:#f1fa8c}
+
+/* WIZARD */
+.wiz{margin:28px 0}
+.wsteps{display:flex;gap:0;border-bottom:1px solid var(--rule);overflow-x:auto}
+.wsb{background:none;border:none;cursor:pointer;padding:11px 18px;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--ink-3);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.wsb:hover{color:var(--ink)}
+.wsb.active{color:var(--accent);border-bottom-color:var(--accent)}
+.wsn{width:20px;height:20px;border-radius:50%;background:var(--rule);color:var(--ink-3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;transition:all .2s;flex-shrink:0}
+.wsb.active .wsn{background:var(--accent);color:#fff}
+.wp{display:none;padding:26px 0}.wp.active{display:block}
+.wptag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.wptitle{font-size:19px;font-weight:700;margin-bottom:10px}
+.wpbody{font-size:15px;color:var(--ink-2);margin-bottom:18px}
+
+/* COMPARE */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}
+@media(max-width:520px){.compare{grid-template-columns:1fr}}
+.cc{border:1px solid;border-radius:8px;overflow:hidden}
+.cc.bad{border-color:#fca5a5}.cc.good{border-color:#86efac}
+.cch{padding:9px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.cc.bad .cch{background:var(--red-l);color:var(--red)}
+.cc.good .cch{background:var(--green-l);color:var(--green)}
+.ccr{padding:9px 16px;font-family:var(--mono);font-size:13px;border-top:1px solid var(--rule);color:var(--ink-2)}
+.cc.bad .ccr{text-decoration:line-through;opacity:.6}
+
+/* NET DIAGRAM */
+.netd{border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin:24px 0;font-size:13px}
+.nl{padding:13px 20px;border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:16px}
+.nl:last-child{border-bottom:none}
+.nll{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;width:76px;flex-shrink:0;line-height:1.4}
+.nlc{flex:1;display:flex;flex-wrap:wrap;gap:8px}
+.nc{background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600}
+
+/* CARD GRID */
+.cgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));margin:22px 0}
+.card{border:1px solid var(--rule);border-radius:8px;padding:18px;background:var(--white);transition:all .2s}
+.card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(26,115,232,.08)}
+.card.hl{border-color:var(--accent);background:var(--accent-l)}
+.ci2{font-size:22px;margin-bottom:10px}
+.ct2{font-weight:700;font-size:14px;margin-bottom:6px}
+.cb{font-size:13px;color:var(--ink-3);line-height:1.6}
+
+/* GCP TABLE */
+.gcpt{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:22px}
+.gcpt th{text-align:left;padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);border-bottom:2px solid var(--ink)}
+.gcpt td{padding:13px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+.gcpt tr:hover td{background:var(--bg)}
+
+/* CHECKLIST */
+.cslabel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin:28px 0 8px}
+.cklist{list-style:none;border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.cki{display:flex;align-items:flex-start;gap:14px;padding:13px 18px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .15s}
+.cki:last-child{border-bottom:none}
+.cki:hover{background:var(--bg)}
+.ckbox{width:18px;height:18px;border:2px solid var(--rule);border-radius:4px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s}
+.cki.done .ckbox{background:var(--green);border-color:var(--green);color:#fff}
+.cktxt{font-size:14px;flex:1;line-height:1.5}
+.cki.done .cktxt{text-decoration:line-through;color:var(--ink-3)}
+.ptrack{height:4px;background:var(--rule);border-radius:2px;margin-bottom:6px}
+.pfill{height:100%;background:var(--green);border-radius:2px;transition:width .4s ease}
+.plabel{font-family:var(--mono);font-size:11px;color:var(--ink-3);text-align:right;margin-bottom:16px}
+.dbanner{display:none}
+.dbanner.show{display:flex;align-items:center;gap:12px;background:var(--green-l);border:1px solid #86efac;border-radius:8px;padding:14px 18px;margin-top:20px;font-size:15px;font-weight:600;color:var(--green)}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,.85);padding:80px 24px;text-align:center}
+.fi{max-width:var(--max);margin:0 auto}
+.ftitle{font-family:var(--serif);font-size:40px;font-weight:900;letter-spacing:-.03em;color:#fff;margin-bottom:12px}
+.fsub{font-size:16px;color:rgba(255,255,255,.45);margin-bottom:40px}
+.fbadges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:40px}
+.fb{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:10px 18px;font-size:14px;font-weight:600;color:#fff}
+.fn{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.22)}
+
+hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
+
+/* VIDEO EMBED */
+.vid-section{margin:40px 0 0}
+.vid-label{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.vid-label::before{content:'▶';color:var(--accent);font-size:10px}
+.vid-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;border:1px solid var(--rule);box-shadow:0 4px 20px rgba(0,0,0,.06)}
+.vid-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+
+/* RESOURCES */
+.res-section{margin-top:28px;padding-top:24px;border-top:1px solid var(--rule)}
+.res-label{font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);margin-bottom:14px}
+.res-links{display:flex;flex-wrap:wrap;gap:8px}
+.res-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;background:var(--accent-l);border:1px solid rgba(26,115,232,.2);border-radius:6px;padding:7px 14px;transition:all .2s}
+.res-link:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.res-link::after{content:'↗';font-size:10px;opacity:.6}
+</style>
+</head>
+<body>
+<div id="rbar"></div>
+
+<nav>
+  <div class="nav-logo">Code<span> to</span> Cloud</div>
+  <div class="nav-chs">
+    <button class="nav-ch" onclick="jump('s1')">01 Why</button>
+    <button class="nav-ch" onclick="jump('s2')">02 Git</button>
+    <button class="nav-ch" onclick="jump('s3')">03 Commits</button>
+    <button class="nav-ch" onclick="jump('s4')">04 Docker</button>
+    <button class="nav-ch" onclick="jump('s5')">05 Networking</button>
+    <button class="nav-ch" onclick="jump('s6')">06 GCP</button>
+    <button class="nav-ch" onclick="jump('s7')">07 CI/CD</button>
+    <button class="nav-ch" onclick="jump('s8')">08 Checklist</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="s0">
+  <div class="hero-inner">
+    <div class="hero-kicker">Developer Field Guide &nbsp;·&nbsp; 8 Concepts</div>
+    <h1>From <em>Code</em><br>to Cloud</h1>
+    <p class="hero-tagline">Everything you need before your first production deployment — version control, containers, networking, and Google Cloud.</p>
+    <div class="hero-chips">
+      <span class="chip"><span class="dot db"></span>Git &amp; GitHub</span>
+      <span class="chip"><span class="dot db"></span>Good Commits</span>
+      <span class="chip"><span class="dot dt"></span>Docker</span>
+      <span class="chip"><span class="dot da"></span>Networking</span>
+      <span class="chip"><span class="dot dg"></span>Google Cloud (GCP)</span>
+      <span class="chip"><span class="dot dr"></span>CI/CD · Cloud Build</span>
+      <span class="chip"><span class="dot db"></span>Pre-Deploy Checklist</span>
+    </div>
+    <div class="scroll-cue">Scroll to start <span class="sarrow">↓</span></div>
+  </div>
+</section>
+
+<!-- 01 WHY -->
+<section id="s1">
+<div class="inner">
+  <div class="ch-label"><span class="ch-num">01</span><span class="ch-rule"></span></div>
+  <h2>Why this matters<br>before you touch <em>Deploy</em></h2>
+  <p class="lede">Writing code is only the beginning. Getting it running reliably — for real users, on real servers — requires a short but critical sequence.</p>
+
+  <div class="pipeline">
+    <div class="pn"><div class="pi">💻</div><div class="pl">Your Laptop</div><div class="ps">it works here</div></div>
+    <div class="pa">→</div>
+    <div class="pn hl"><div class="pi">🗂️</div><div class="pl">Git / GitHub</div><div class="ps">version control</div></div>
+    <div class="pa">→</div>
+    <div class="pn hl"><div class="pi">📦</div><div class="pl">Docker</div><div class="ps">containerize</div></div>
+    <div class="pa">→</div>
+    <div class="pn hl"><div class="pi">🌐</div><div class="pl">Networking</div><div class="ps">ports, DNS</div></div>
+    <div class="pa">→</div>
+    <div class="pn hl"><div class="pi">⚙️</div><div class="pl">CI/CD</div><div class="ps">auto-checks</div></div>
+    <div class="pa">→</div>
+    <div class="pn"><div class="pi">☁️</div><div class="pl">GCP</div><div class="ps">live for users</div></div>
+  </div>
+
+  <div class="cgrid">
+    <div class="card"><div class="ci2">🔒</div><div class="ct2">Nothing is ever lost</div><div class="cb">Every change is tracked and reversible. Travel back to any point in history.</div></div>
+    <div class="card"><div class="ci2">🤝</div><div class="ct2">Teams don't collide</div><div class="cb">Multiple developers work simultaneously without overwriting each other.</div></div>
+    <div class="card"><div class="ci2">📦</div><div class="ct2">"Works on my machine" — solved</div><div class="cb">Containers pack your app with everything it needs to run identically everywhere.</div></div>
+    <div class="card"><div class="ci2">🚀</div><div class="ct2">Deploy with confidence</div><div class="cb">Automated pipelines catch bugs on your branch, not in production.</div></div>
+  </div>
+</div>
+</section>
+
+<!-- 02 GIT -->
+<section id="s2">
+<div class="inner">
+  <div class="ch-label"><span class="ch-num">02</span><span class="ch-rule"></span></div>
+  <h2>Git &amp; GitHub<br>in <em>plain English</em></h2>
+  <p class="lede">Git is the tool on your computer. GitHub is the website that stores your code online. They are not the same thing.</p>
+
+  <table class="ctable">
+    <thead><tr><th>Term</th><th>Think of it as…</th><th>What it actually does</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tb">repository</span></td><td>A project folder with superpowers</td><td>Tracks every change ever made to every file inside it</td></tr>
+      <tr><td><span class="tag tb">commit</span></td><td>A save point with a sticky note</td><td>Snapshots your changes and records what you did and why</td></tr>
+      <tr><td><span class="tag tb">branch</span></td><td>A parallel universe to experiment in</td><td>Work on features without touching the "official" code</td></tr>
+      <tr><td><span class="tag tb">push</span></td><td>Upload to GitHub</td><td>Sends your local commits to GitHub so others can see them</td></tr>
+      <tr><td><span class="tag tb">pull</span></td><td>Download the latest version</td><td>Gets teammates' newest commits from GitHub to your machine</td></tr>
+      <tr><td><span class="tag tb">pull request</span></td><td>A proposal + code review</td><td>Asks the team to review &amp; approve your branch before merging</td></tr>
+      <tr><td><span class="tag tb">merge</span></td><td>Accept and combine changes</td><td>Folds your approved branch back into the main codebase</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout cd">
+    <div class="ct">🚫 Rule #1 — Never commit directly to <code>main</code></div>
+    <code>main</code> is your live, deployed app. Always create a new branch, get it reviewed, then merge. Committing directly to <code>main</code> is like editing a document thousands of people are reading in real time.
+  </div>
+
+  <div class="wiz">
+    <div class="wsteps">
+      <button class="wsb active" onclick="wiz('g',0)"><span class="wsn">1</span>Init &amp; Branch</button>
+      <button class="wsb" onclick="wiz('g',1)"><span class="wsn">2</span>Stage &amp; Commit</button>
+      <button class="wsb" onclick="wiz('g',2)"><span class="wsn">3</span>Push &amp; PR</button>
+      <button class="wsb" onclick="wiz('g',3)"><span class="wsn">4</span>Merge</button>
+    </div>
+    <div id="g-0" class="wp active">
+      <div class="wptag">Step 1 of 4</div>
+      <div class="wptitle">Create a repository and a branch</div>
+      <div class="wpbody">Always start by creating a new branch. Think of it as a safe sandbox — your changes live here until reviewed and approved.</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">bash</div></div>
+        <div class="tbody">
+          <div><span class="tc"># Create a new project and initialise Git</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">git init my-app &amp;&amp; cd my-app</span></div>
+          <div><span class="to">Initialized empty Git repository in ~/my-app/.git/</span></div>
+          <br>
+          <div><span class="tc"># Create and switch to a new feature branch</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">git checkout -b <span class="tv">feature/add-login</span></span></div>
+          <div><span class="to">Switched to a new branch 'feature/add-login'</span></div>
+        </div>
+      </div>
+    </div>
+    <div id="g-1" class="wp">
+      <div class="wptag">Step 2 of 4</div>
+      <div class="wptitle">Stage your changes and commit</div>
+      <div class="wpbody">Staging (<code>git add</code>) is like putting items in a box. Committing (<code>git commit</code>) is sealing the box and labelling it clearly.</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">bash</div></div>
+        <div class="tbody">
+          <div><span class="tc"># Check what files have changed</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">git status</span></div>
+          <div><span class="to">modified: app.py &nbsp; new file: templates/login.html</span></div>
+          <br>
+          <div><span class="tc"># Stage all changes</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">git add .</span></div>
+          <br>
+          <div><span class="tc"># Commit with a clear, purposeful message</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">git commit -m <span class="tv">"Add login form with email validation"</span></span></div>
+          <div><span class="tok">✓ [feature/add-login 3f2a1c9] Add login form with email validation</span></div>
+        </div>
+      </div>
+    </div>
+    <div id="g-2" class="wp">
+      <div class="wptag">Step 3 of 4</div>
+      <div class="wptitle">Push your branch and open a Pull Request</div>
+      <div class="wpbody">Pushing uploads your branch to GitHub. A Pull Request is your formal proposal for the team to review before the code goes anywhere near production.</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">bash</div></div>
+        <div class="tbody">
+          <div><span class="tp">$ </span><span class="tcmd">git push origin <span class="tv">feature/add-login</span></span></div>
+          <div><span class="tok">✓ Branch pushed to GitHub.</span></div>
+          <br>
+          <div><span class="tc"># GitHub shows you a direct link to open the PR:</span></div>
+          <div><span class="to">remote: Create a pull request:</span></div>
+          <div><span class="to">remote:   https://github.com/your-org/my-app/pull/new/feature/add-login</span></div>
+        </div>
+      </div>
+    </div>
+    <div id="g-3" class="wp">
+      <div class="wptag">Step 4 of 4</div>
+      <div class="wptitle">Get approved and merge</div>
+      <div class="callout cs">
+        <div class="ct">✅ A good PR description answers three questions</div>
+        <strong>What changed?</strong> &nbsp;·&nbsp; <strong>Why?</strong> &nbsp;·&nbsp; <strong>How can someone test it?</strong><br><br>
+        You don't need to understand every line of code in a PR. Focus on the description, the approach, and whether it makes sense. That's a valuable review.
+      </div>
+    </div>
+  <div class="vid-section">
+    <div class="vid-label">Watch: Git &amp; GitHub for Beginners</div>
+    <div class="vid-wrap"><iframe src="https://www.youtube.com/embed/RGOj5yH7evk" allowfullscreen loading="lazy"></iframe></div>
+  </div>
+  <div class="res-section">
+    <div class="res-label">📚 Additional Resources</div>
+    <div class="res-links">
+      <a class="res-link" href="https://learngitbranching.js.org" target="_blank" rel="noopener">Interactive Git Branching</a>
+      <a class="res-link" href="https://git-scm.com/docs" target="_blank" rel="noopener">Git Documentation</a>
+      <a class="res-link" href="https://skills.github.com" target="_blank" rel="noopener">GitHub Skills</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 03 COMMITS -->
+<section id="s3">
+<div class="inner">
+  <div class="ch-label"><span class="ch-num">03</span><span class="ch-rule"></span></div>
+  <h2>Good commits<br><em>tell a story</em></h2>
+  <p class="lede">A commit message is a note to your future self — and every developer who comes after you. Write accordingly.</p>
+
+  <div class="compare">
+    <div class="cc bad">
+      <div class="cch">❌ Useless</div>
+      <div class="ccr">fix stuff</div>
+      <div class="ccr">update</div>
+      <div class="ccr">asdfgh</div>
+      <div class="ccr">changes</div>
+      <div class="ccr">wip</div>
+      <div class="ccr">oops fixed it</div>
+    </div>
+    <div class="cc good">
+      <div class="cch">✅ Useful</div>
+      <div class="ccr">Add JWT authentication to the API</div>
+      <div class="ccr">Fix crash when cart is empty at checkout</div>
+      <div class="ccr">Remove deprecated Stripe v2 API calls</div>
+      <div class="ccr">Update README with GCP setup steps</div>
+      <div class="ccr">Increase login timeout from 30s to 5min</div>
+      <div class="ccr">Refactor DB queries to reduce N+1 problem</div>
+    </div>
+  </div>
+
+  <div class="callout ci">
+    <div class="ct">📐 The formula</div>
+    Start with a present-tense verb: <strong>Add · Fix · Remove · Update · Refactor · Improve · Rename · Move</strong>. Say <em>what</em>, then optionally <em>why</em>. Stay under 72 characters.
+  </div>
+
+  <hr>
+
+  <div class="callout cd">
+    <div class="ct">🚫 Things to never commit to Git</div>
+    <strong>API keys &amp; passwords</strong> · <code>.env</code> files · large binary files · compiled artifacts (<code>node_modules/</code>, <code>__pycache__/</code>, <code>dist/</code>).<br>
+    Create a <code>.gitignore</code> file the moment you initialise a repository.
+  </div>
+
+  <div class="term">
+    <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">.gitignore (Python)</div></div>
+    <div class="tbody">
+      <div><span class="tc"># Never commit these</span></div>
+      <div><span class="tk2">.env</span></div>
+      <div><span class="tk2">__pycache__/</span></div>
+      <div><span class="tk2">*.pyc</span></div>
+      <div><span class="tk2">venv/</span></div>
+      <div><span class="tk2">.DS_Store</span></div>
+      <div><span class="tk2">*.log</span></div>
+    </div>
+  </div>
+
+  <div class="vid-section">
+    <div class="vid-label">Watch: Writing Good Commit Messages</div>
+    <div class="vid-wrap"><iframe src="https://www.youtube.com/embed/HUBNt18RFbo" allowfullscreen loading="lazy"></iframe></div>
+  </div>
+  <div class="res-section">
+    <div class="res-label">📚 Additional Resources</div>
+    <div class="res-links">
+      <a class="res-link" href="https://www.conventionalcommits.org" target="_blank" rel="noopener">Conventional Commits</a>
+      <a class="res-link" href="https://chris.beams.io/posts/git-commit" target="_blank" rel="noopener">Commit Message Guide</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 04 DOCKER -->
+<section id="s4">
+<div class="inner">
+  <div class="ch-label"><span class="ch-num">04</span><span class="ch-rule"></span></div>
+  <h2>Docker: your app<br>in a <em>self-contained box</em></h2>
+  <p class="lede">A container bundles your code, runtime, libraries, and config into one portable unit — running identically on every machine and every cloud.</p>
+
+  <div class="pipeline">
+    <div class="pn"><div class="pi">📁</div><div class="pl">Your Code</div></div>
+    <div class="pa">+</div>
+    <div class="pn"><div class="pi">📚</div><div class="pl">Libraries</div></div>
+    <div class="pa">+</div>
+    <div class="pn"><div class="pi">⚙️</div><div class="pl">Runtime</div></div>
+    <div class="pa">+</div>
+    <div class="pn"><div class="pi">🔧</div><div class="pl">Config</div></div>
+    <div class="pa">=</div>
+    <div class="pn hl"><div class="pi">📦</div><div class="pl">Container</div><div class="ps">runs anywhere</div></div>
+  </div>
+
+  <table class="ctable">
+    <thead><tr><th>Term</th><th>Analogy</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tk">Dockerfile</span></td><td>A recipe</td><td>Instructions for building an image</td></tr>
+      <tr><td><span class="tag tk">Image</span></td><td>A pre-baked cake</td><td>The built, immutable artifact — ready to run</td></tr>
+      <tr><td><span class="tag tk">Container</span></td><td>The cake being served</td><td>A running instance of an image</td></tr>
+      <tr><td><span class="tag tg">Artifact Registry</span></td><td>A secure bakery shelf</td><td>GCP's private storage for your Docker images</td></tr>
+    </tbody>
+  </table>
+
+  <div class="wiz">
+    <div class="wsteps">
+      <button class="wsb active" onclick="wiz('d',0)"><span class="wsn">1</span>Dockerfile</button>
+      <button class="wsb" onclick="wiz('d',1)"><span class="wsn">2</span>Build</button>
+      <button class="wsb" onclick="wiz('d',2)"><span class="wsn">3</span>Run Locally</button>
+      <button class="wsb" onclick="wiz('d',3)"><span class="wsn">4</span>Push to GCP</button>
+    </div>
+    <div id="d-0" class="wp active">
+      <div class="wptag">Step 1 of 4</div>
+      <div class="wptitle">Write your Dockerfile</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">Dockerfile</div></div>
+        <div class="tbody">
+          <div><span class="tc"># Start from an official base image</span></div>
+          <div><span class="tcmd">FROM python:3.11-slim</span></div><br>
+          <div><span class="tc"># Set working directory inside the container</span></div>
+          <div><span class="tcmd">WORKDIR /app</span></div><br>
+          <div><span class="tc"># Copy dependency list first (Docker caches this layer)</span></div>
+          <div><span class="tcmd">COPY requirements.txt .</span></div>
+          <div><span class="tcmd">RUN pip install --no-cache-dir -r requirements.txt</span></div><br>
+          <div><span class="tc"># Copy your application code</span></div>
+          <div><span class="tcmd">COPY . .</span></div><br>
+          <div><span class="tc"># Port the app listens on</span></div>
+          <div><span class="tcmd">EXPOSE <span class="tv">8080</span></span></div><br>
+          <div><span class="tc"># Command to start the app</span></div>
+          <div><span class="tcmd">CMD [<span class="tv">"python"</span>, <span class="tv">"app.py"</span>]</span></div>
+        </div>
+      </div>
+    </div>
+    <div id="d-1" class="wp">
+      <div class="wptag">Step 2 of 4</div>
+      <div class="wptitle">Build the image</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">bash</div></div>
+        <div class="tbody">
+          <div><span class="tp">$ </span><span class="tcmd">docker build -t <span class="tv">my-app:v1.0.0</span> .</span></div>
+          <div><span class="to">[1/5] FROM python:3.11-slim ...</span></div>
+          <div><span class="tok">✓ Successfully built 3e8a2c9f1b2d</span></div>
+          <div><span class="tok">✓ Successfully tagged my-app:v1.0.0</span></div>
+        </div>
+      </div>
+      <div class="callout cw">
+        <div class="ct">⚠️ Never tag as :latest in production</div>
+        Tag with a version number or Git commit hash. <code>:latest</code> makes it impossible to track which version is deployed.
+      </div>
+    </div>
+    <div id="d-2" class="wp">
+      <div class="wptag">Step 3 of 4</div>
+      <div class="wptitle">Run and test it locally</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">bash</div></div>
+        <div class="tbody">
+          <div><span class="tc"># Map port 8080 on your laptop → port 8080 inside container</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">docker run -p <span class="tv">8080:8080</span> my-app:v1.0.0</span></div><br>
+          <div><span class="tc"># Visit http://localhost:8080 to verify</span></div><br>
+          <div><span class="tc"># View logs from a running container</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">docker logs $(docker ps -q)</span></div>
+        </div>
+      </div>
+    </div>
+    <div id="d-3" class="wp">
+      <div class="wptag">Step 4 of 4</div>
+      <div class="wptitle">Push to GCP Artifact Registry</div>
+      <div class="term">
+        <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">bash</div></div>
+        <div class="tbody">
+          <div><span class="tc"># Authenticate Docker with GCP</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">gcloud auth configure-docker <span class="tv">asia-south1-docker.pkg.dev</span></span></div><br>
+          <div><span class="tc"># Tag for Artifact Registry</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">docker tag my-app:v1.0.0 \</span></div>
+          <div><span class="tcmd">&nbsp;&nbsp;asia-south1-docker.pkg.dev/<span class="tv">my-project</span>/my-repo/my-app:v1.0.0</span></div><br>
+          <div><span class="tc"># Push</span></div>
+          <div><span class="tp">$ </span><span class="tcmd">docker push asia-south1-docker.pkg.dev/my-project/my-repo/my-app:v1.0.0</span></div>
+          <div><span class="tok">✓ Image pushed to Artifact Registry.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vid-section">
+    <div class="vid-label">Watch: Docker Tutorial for Beginners</div>
+    <div class="vid-wrap"><iframe src="https://www.youtube.com/embed/Gjnup-PuquQ" allowfullscreen loading="lazy"></iframe></div>
+  </div>
+  <div class="res-section">
+    <div class="res-label">📚 Additional Resources</div>
+    <div class="res-links">
+      <a class="res-link" href="https://labs.play-with-docker.com" target="_blank" rel="noopener">Play with Docker</a>
+      <a class="res-link" href="https://docs.docker.com/get-started" target="_blank" rel="noopener">Docker Documentation</a>
+      <a class="res-link" href="https://docker-curriculum.com" target="_blank" rel="noopener">Docker Tutorial</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 05 NETWORKING -->
+<section id="s5">
+<div class="inner">
+  <div class="ch-label"><span class="ch-num">05</span><span class="ch-rule"></span></div>
+  <h2>Networking basics<br>every developer <em>must know</em></h2>
+  <p class="lede">Your app runs in the cloud, but users reach it through a web of networks, ports, and addresses. Here's the minimum you need to understand.</p>
+
+  <div class="netd">
+    <div class="nl"><div class="nll" style="color:var(--accent)">User</div><div class="nlc"><span class="nc">Browser</span><span class="nc">Mobile App</span><span class="nc">API Client</span></div></div>
+    <div class="nl"><div class="nll" style="color:#34a853">DNS</div><div class="nlc"><span class="nc">myapp.com → 34.102.12.45</span></div></div>
+    <div class="nl"><div class="nll" style="color:var(--amber)">Load<br>Balancer</div><div class="nlc"><span class="nc">HTTPS :443</span><span class="nc">TLS termination</span><span class="nc">Route traffic</span></div></div>
+    <div class="nl"><div class="nll" style="color:var(--red)">Firewall<br>/ VPC</div><div class="nlc"><span class="nc">Allow :80, :443 only</span><span class="nc">Block all others</span><span class="nc">Private network</span></div></div>
+    <div class="nl"><div class="nll" style="color:var(--accent)">App</div><div class="nlc"><span class="nc">Container :8080</span><span class="nc">Cloud Run</span></div></div>
+  </div>
+
+  <table class="ctable">
+    <thead><tr><th>Concept</th><th>What it is</th><th>Why it matters</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag tb">IP Address</span></td><td>A server's numeric address e.g. <code>34.102.12.45</code></td><td>How machines find each other on a network</td></tr>
+      <tr><td><span class="tag tb">Port</span></td><td>A numbered "door" on a server e.g. <code>:8080</code></td><td>One server runs many services — ports tell traffic where to go</td></tr>
+      <tr><td><span class="tag tg">DNS</span></td><td>Translates <code>myapp.com</code> into an IP address</td><td>Humans use names; machines use numbers. DNS bridges them.</td></tr>
+      <tr><td><span class="tag tg">HTTP / HTTPS</span></td><td>The protocol browsers use to request pages</td><td>HTTPS is encrypted. Always use HTTPS in production.</td></tr>
+      <tr><td><span class="tag ta">Firewall</span></td><td>Rules that allow or block traffic to your server</td><td>Prevents unauthorised access — only open ports you need</td></tr>
+      <tr><td><span class="tag ta">VPC</span></td><td>A private network inside GCP for your team only</td><td>Your databases and internal services are hidden from the public internet</td></tr>
+      <tr><td><span class="tag tk">Load Balancer</span></td><td>Distributes traffic across multiple servers</td><td>Prevents any one server from being overwhelmed; enables scaling</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout ci">
+    <div class="ct">💡 Common port numbers to memorise</div>
+    <code>:80</code> HTTP &nbsp;·&nbsp; <code>:443</code> HTTPS &nbsp;·&nbsp; <code>:5432</code> PostgreSQL &nbsp;·&nbsp; <code>:3306</code> MySQL &nbsp;·&nbsp; <code>:6379</code> Redis &nbsp;·&nbsp; <code>:8080</code> app default<br><br>
+    Your Cloud Run container listens on <code>:8080</code>. GCP's load balancer handles the public <code>:443</code> and forwards traffic to it automatically.
+  </div>
+
+  <div class="callout cw">
+    <div class="ct">⚠️ The most common networking mistake</div>
+    Opening your database port (<code>:5432</code>) to the entire internet (<code>0.0.0.0/0</code>) in firewall rules. Databases must <strong>never</strong> be publicly accessible — keep them inside your VPC.
+  </div>
+
+  <div class="vid-section">
+    <div class="vid-label">Watch: Computer Networking Fundamentals</div>
+    <div class="vid-wrap"><iframe src="https://www.youtube.com/embed/qiQR5rTSshw" allowfullscreen loading="lazy"></iframe></div>
+  </div>
+  <div class="res-section">
+    <div class="res-label">📚 Additional Resources</div>
+    <div class="res-links">
+      <a class="res-link" href="https://howdns.works" target="_blank" rel="noopener">How DNS Works</a>
+      <a class="res-link" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview" target="_blank" rel="noopener">HTTP Overview (MDN)</a>
+      <a class="res-link" href="https://www.cloudflare.com/learning/" target="_blank" rel="noopener">Cloudflare Learning Center</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 06 GCP -->
+<section id="s6">
+<div class="inner">
+  <div class="ch-label"><span class="ch-num">06</span><span class="ch-rule"></span></div>
+  <h2>Google Cloud<br><em>service by service</em></h2>
+  <p class="lede">GCP has hundreds of services. Here are the eight you will actually use deploying your first application.</p>
+
+  <table class="gcpt">
+    <thead><tr><th>Service</th><th>Category</th><th>What it does</th><th>Start here if…</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Cloud Run</strong></td><td><span class="tag tg">Compute</span></td><td>Runs your Docker container without managing servers. Scales to zero when idle.</td><td>Building a web app or API ✓</td></tr>
+      <tr><td><strong>GKE</strong></td><td><span class="tag tg">Compute</span></td><td>Kubernetes cluster for many containers at scale.</td><td>Multiple services, complex scaling</td></tr>
+      <tr><td><strong>Artifact Registry</strong></td><td><span class="tag tb">Storage</span></td><td>Private storage for your Docker images inside GCP.</td><td>Any Docker-based deploy</td></tr>
+      <tr><td><strong>Cloud SQL</strong></td><td><span class="tag tb">Database</span></td><td>Managed PostgreSQL / MySQL. No server admin required.</td><td>App needs a relational DB</td></tr>
+      <tr><td><strong>Cloud Build</strong></td><td><span class="tag ta">CI/CD</span></td><td>Runs build, test, and deploy pipelines on every push.</td><td>Automating GCP deployments</td></tr>
+      <tr><td><strong>Cloud Load Balancing</strong></td><td><span class="tag tk">Networking</span></td><td>Routes HTTPS traffic to containers. Handles TLS certificates.</td><td>Custom domains, high availability</td></tr>
+      <tr><td><strong>Secret Manager</strong></td><td><span class="tag tk">Security</span></td><td>Stores API keys and passwords securely in GCP.</td><td>Any app with secrets — all apps</td></tr>
+      <tr><td><strong>Cloud Logging</strong></td><td><span class="tag tk">Observability</span></td><td>Aggregates logs from all services in one place.</td><td>Debugging production issues</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout cs">
+    <div class="ct">✅ Recommended starter stack</div>
+    <strong>Cloud Run</strong> + <strong>Artifact Registry</strong> + <strong>Cloud SQL</strong> + <strong>Secret Manager</strong> + <strong>Cloud Build</strong>.<br>
+    This five-service combination covers 90% of what a new production app needs.
+  </div>
+
+  <hr>
+
+  <h3>Three environments — a non-negotiable rule</h3>
+  <div class="cgrid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="card"><div class="ci2">🧑‍💻</div><div class="ct2">Development</div><div class="cb">Your local machine. Break things freely. Never touches production data.</div></div>
+    <div class="card"><div class="ci2">🧪</div><div class="ct2">Staging</div><div class="cb">A mirror of production in GCP. Every change is tested here first.</div></div>
+    <div class="card hl"><div class="ci2">🌐</div><div class="ct2">Production</div><div class="cb">Live. Real users. Only receives <code>main</code> merges that passed staging.</div></div>
+  </div>
+
+  <div class="vid-section">
+    <div class="vid-label">Watch: Google Cloud Platform Overview</div>
+    <div class="vid-wrap"><iframe src="https://www.youtube.com/embed/jpno8FSqpc8" allowfullscreen loading="lazy"></iframe></div>
+  </div>
+  <div class="res-section">
+    <div class="res-label">📚 Additional Resources</div>
+    <div class="res-links">
+      <a class="res-link" href="https://cloud.google.com/docs" target="_blank" rel="noopener">Google Cloud Documentation</a>
+      <a class="res-link" href="https://cloudskillsboost.google" target="_blank" rel="noopener">Google Cloud Skills Boost</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 07 CI/CD -->
+<section id="s7">
+<div class="inner">
+  <div class="ch-label"><span class="ch-num">07</span><span class="ch-rule"></span></div>
+  <h2>CI/CD: let the machine<br><em>check your work</em></h2>
+  <p class="lede">Continuous Integration runs automated checks on every push. Continuous Deployment ships to GCP automatically when all checks pass. You focus on writing code.</p>
+
+  <div class="pipeline">
+    <div class="pn"><div class="pi">📝</div><div class="pl">git push</div><div class="ps">you</div></div>
+    <div class="pa">→</div>
+    <div class="pn hl"><div class="pi">🔬</div><div class="pl">Run Tests</div><div class="ps">pytest</div></div>
+    <div class="pa">→</div>
+    <div class="pn hl"><div class="pi">🔍</div><div class="pl">Lint &amp; Scan</div><div class="ps">flake8</div></div>
+    <div class="pa">→</div>
+    <div class="pn hl"><div class="pi">📦</div><div class="pl">Docker Build</div><div class="ps">Cloud Build</div></div>
+    <div class="pa">→</div>
+    <div class="pn hl"><div class="pi">🚀</div><div class="pl">Deploy</div><div class="ps">Cloud Run</div></div>
+  </div>
+
+  <p>GCP's native CI/CD tool is <strong>Cloud Build</strong>. It reads a <code>cloudbuild.yaml</code> file in your repository and triggers automatically on every push to <code>main</code>.</p>
+
+  <div class="term">
+    <div class="tbar"><div class="td r"></div><div class="td y"></div><div class="td g"></div><div class="tname">cloudbuild.yaml</div></div>
+    <div class="tbody">
+      <div><span class="tk2">steps:</span></div>
+      <br>
+      <div><span class="tc">  # 1. Run tests</span></div>
+      <div><span class="tcmd">  - name: <span class="tv">'python:3.11'</span></span></div>
+      <div><span class="tcmd">    entrypoint: bash</span></div>
+      <div><span class="tcmd">    args: ['-c', 'pip install -r requirements.txt &amp;&amp; pytest']</span></div>
+      <br>
+      <div><span class="tc">  # 2. Build Docker image, tagged with the Git commit hash</span></div>
+      <div><span class="tcmd">  - name: <span class="tv">'gcr.io/cloud-builders/docker'</span></span></div>
+      <div><span class="tcmd">    args:</span></div>
+      <div><span class="tcmd">      - build</span></div>
+      <div><span class="tcmd">      - -t</span></div>
+      <div><span class="tcmd">      - asia-south1-docker.pkg.dev/$PROJECT_ID/my-repo/my-app:<span class="tv">$COMMIT_SHA</span></span></div>
+      <div><span class="tcmd">      - .</span></div>
+      <br>
+      <div><span class="tc">  # 3. Push to Artifact Registry</span></div>
+      <div><span class="tcmd">  - name: <span class="tv">'gcr.io/cloud-builders/docker'</span></span></div>
+      <div><span class="tcmd">    args: ['push', 'asia-south1-docker.pkg.dev/$PROJECT_ID/my-repo/my-app:$COMMIT_SHA']</span></div>
+      <br>
+      <div><span class="tc">  # 4. Deploy to Cloud Run</span></div>
+      <div><span class="tcmd">  - name: <span class="tv">'gcr.io/cloud-builders/gcloud'</span></span></div>
+      <div><span class="tcmd">    args:</span></div>
+      <div><span class="tcmd">      - run</span></div>
+      <div><span class="tcmd">      - deploy</span></div>
+      <div><span class="tcmd">      - my-app</span></div>
+      <div><span class="tcmd">      - --image=asia-south1-docker.pkg.dev/$PROJECT_ID/my-repo/my-app:<span class="tv">$COMMIT_SHA</span></span></div>
+      <div><span class="tcmd">      - --region=asia-south1</span></div>
+      <div><span class="tcmd">      - --platform=managed</span></div>
+    </div>
+  </div>
+
+  <div class="callout ci">
+    <div class="ct">💡 Why $COMMIT_SHA matters</div>
+    The image is tagged with the exact Git commit hash. This means you always know precisely which code is running in production — and can roll back to any previous commit instantly.
+  </div>
+
+  <div class="vid-section">
+    <div class="vid-label">Watch: CI/CD Pipeline Explained</div>
+    <div class="vid-wrap"><iframe src="https://www.youtube.com/embed/scEDHsr3APg" allowfullscreen loading="lazy"></iframe></div>
+  </div>
+  <div class="res-section">
+    <div class="res-label">📚 Additional Resources</div>
+    <div class="res-links">
+      <a class="res-link" href="https://docs.github.com/en/actions" target="_blank" rel="noopener">GitHub Actions</a>
+      <a class="res-link" href="https://cloud.google.com/build/docs" target="_blank" rel="noopener">Google Cloud Build</a>
+      <a class="res-link" href="https://docs.gitlab.com/ee/ci/" target="_blank" rel="noopener">GitLab CI</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 08 CHECKLIST -->
+<section id="s8">
+<div class="inner">
+  <div class="ch-label"><span class="ch-num">08</span><span class="ch-rule"></span></div>
+  <h2>Before you hit<br><em>Deploy</em></h2>
+  <p class="lede">Run through this before every deployment. Click each item to check it off.</p>
+
+  <div class="ptrack"><div class="pfill" id="prog" style="width:0%"></div></div>
+  <div class="plabel" id="plabel">0 / 15 complete</div>
+
+  <div class="cslabel">📁 Version Control</div>
+  <ul class="cklist">
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">All changes committed — <code>git status</code> shows nothing pending</div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">Work was done on a feature branch, <strong>not</strong> directly on <code>main</code></div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">A Pull Request was reviewed and approved before merging to <code>main</code></div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">No <code>.env</code> files, API keys, or passwords in the commit history</div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt"><code>.gitignore</code> excludes <code>__pycache__/</code>, <code>venv/</code>, build artifacts</div></li>
+  </ul>
+
+  <div class="cslabel">📦 Docker / Container</div>
+  <ul class="cklist">
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt"><code>docker build .</code> completes without errors</div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">Container runs locally and app behaves as expected</div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">No hardcoded secrets in the Dockerfile — environment variables used instead</div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">Image tagged with version number or commit hash, not <code>:latest</code></div></li>
+  </ul>
+
+  <div class="cslabel">🌐 Networking &amp; Security</div>
+  <ul class="cklist">
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">Firewall rules only expose ports the app needs — typically <code>:80</code> and <code>:443</code></div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">Database is inside the VPC and <em>not</em> reachable from the public internet</div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">All credentials stored in <strong>GCP Secret Manager</strong> — not in code or config files</div></li>
+  </ul>
+
+  <div class="cslabel">☁️ GCP Deployment</div>
+  <ul class="cklist">
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">App was deployed and tested on <strong>staging</strong> before touching production</div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">Health check endpoint returns <code>200 OK</code> after deployment</div></li>
+    <li class="cki" onclick="chk(this)"><div class="ckbox">✓</div><div class="cktxt">Logs visible in <strong>Cloud Logging</strong> — no errors on startup</div></li>
+  </ul>
+
+  <div id="dbanner" class="dbanner">🎉 &nbsp; All checks passed — you're ready to ship.</div>
+
+  <div class="vid-section">
+    <div class="vid-label">Watch: Deploying to Production</div>
+    <div class="vid-wrap"><iframe src="https://www.youtube.com/embed/Z9zYQjR2dY0" allowfullscreen loading="lazy"></iframe></div>
+  </div>
+  <div class="res-section">
+    <div class="res-label">📚 Going deeper</div>
+    <div class="res-links">
+      <a class="res-link" href="https://12factor.net" target="_blank" rel="noopener">The Twelve-Factor App</a>
+      <a class="res-link" href="https://sre.google/sre-book/" target="_blank" rel="noopener">Google SRE Book</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fi">
+    <div class="ftitle">You're ready to ship.</div>
+    <p class="fsub">You've covered the complete journey from code to cloud.</p>
+    <div class="fbadges">
+      <div class="fb">🗂️ Git &amp; GitHub</div>
+      <div class="fb">📝 Good Commits</div>
+      <div class="fb">📦 Docker</div>
+      <div class="fb">🌐 Networking</div>
+      <div class="fb">☁️ Google Cloud (GCP)</div>
+      <div class="fb">⚙️ CI/CD · Cloud Build</div>
+      <div class="fb">✅ Pre-Deploy Checklist</div>
+    </div>
+    <p class="fn">code-to-cloud · developer field guide · gcp edition</p>
+  </div>
+</footer>
+
+<script>
+// Reading progress bar
+window.addEventListener('scroll',()=>{
+  const h=document.body.scrollHeight-window.innerHeight;
+  document.getElementById('rbar').style.width=(window.scrollY/h*100)+'%';
+});
+
+// Section reveal on scroll
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting)e.target.querySelector('.inner')?.classList.add('vis')});
+},{threshold:.12});
+document.querySelectorAll('section').forEach(s=>io.observe(s));
+
+// Active nav button
+const navBtns=document.querySelectorAll('.nav-ch');
+const sids=['s1','s2','s3','s4','s5','s6','s7','s8'];
+const sels=sids.map(id=>document.getElementById(id));
+const nio=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      const i=sels.indexOf(e.target);
+      navBtns.forEach((b,j)=>b.classList.toggle('active',i===j));
+    }
+  });
+},{threshold:.35});
+sels.forEach(s=>s&&nio.observe(s));
+
+function jump(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
+
+// Wizards
+function wiz(g,i){
+  const c=document.getElementById(g+'-0')?.closest('.wiz');
+  if(!c)return;
+  c.querySelectorAll('.wp').forEach((p,j)=>p.classList.toggle('active',j===i));
+  c.querySelectorAll('.wsb').forEach((b,j)=>b.classList.toggle('active',j===i));
+}
+
+// Checklist
+const TOTAL=15;
+function chk(li){
+  li.classList.toggle('done');
+  const done=document.querySelectorAll('.cki.done').length;
+  const pct=Math.round(done/TOTAL*100);
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('plabel').textContent=done+' / '+TOTAL+' complete';
+  document.getElementById('dbanner').classList.toggle('show',done===TOTAL);
+}
+</script>
+</body>
+</html>

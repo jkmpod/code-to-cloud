@@ -1,0 +1,23 @@
+name: Sync Wiki
+
+on:
+  push:
+    branches:
+      - main  # Trigger only when pushing to the main branch
+    paths:
+      - 'wiki/**' # Trigger only if files inside the wiki folder change
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Sync to Wiki
+        uses: Andrew-Chen-Wang/github-wiki-action@v4
+        with:
+          # This folder in your main repo will be uploaded to the wiki
+          path: wiki
+          # The token is automatically provided by GitHub Actions
+          token: ${{ secrets.GITHUB_TOKEN }}

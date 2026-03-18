@@ -828,13 +828,15 @@
   /* ─── TEMPLATE ───────────────────────────────────────────── */
   .template-tree {
     background: var(--surface2);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border);   /* keep this — overrides the global pre border */
     border-radius: var(--radius-lg);
-    padding: 1.5rem;
+    padding: 1.5rem;                   /* keep this — overrides the global pre padding */
     font-family: var(--mono);
     font-size: 0.82rem;
     line-height: 2;
     color: var(--text);
+    white-space: pre;                  /* ADD — ensures indentation is preserved */
+    overflow-x: auto;                  /* ADD — prevents overflow on small screens */
   }
   .tree-dir { color: var(--blue); }
   .tree-file { color: var(--muted); }
@@ -1627,7 +1629,7 @@
 
     <div class="two-col">
       <div>
-        <div class="template-tree">
+        <pre class="template-tree">
 <span class="tree-dir">my-project/</span>
 ├── <span class="tree-dir">frontend/</span>          <span class="tree-comment"># UI layer</span>
 │   ├── <span class="tree-file">src/</span>
@@ -1648,7 +1650,7 @@
 │   ├── <span class="tree-file">test-strategy.md</span>
 │   └── <span class="tree-file">ai-usage-log.md</span>
 └── <span class="tree-file">README.md</span>
-        </div>
+        </pre>
         <div style="margin-top:1rem">
           <button class="btn btn-primary" onclick="copyTemplate(this)" style="width:100%;justify-content:center">
             ⬡ Copy Full-Stack Starter Template

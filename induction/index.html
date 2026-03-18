@@ -1,0 +1,2539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code-to-Cloud AI-Assisted Full-Stack Developer Induction</title>
+<style>
+  /* ─── TOKENS ─────────────────────────────────────────────── */
+  :root {
+    --bg:        #0b0e14;
+    --surface:   #111722;
+    --surface2:  #161d2b;
+    --border:    #1e2a3a;
+    --border2:   #243044;
+    --text:      #c8d6e8;
+    --muted:     #5a7290;
+    --accent:    #f5a623;
+    --accent2:   #3ecfcf;
+    --accent3:   #6ee7b7;
+    --red:       #f46d6d;
+    --blue:      #4da6ff;
+    --purple:    #b48eff;
+    --mono:      'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --sans:      'DM Sans', 'IBM Plex Sans', sans-serif;
+    --display:   'Syne', 'Space Grotesk', sans-serif;
+    --radius:    8px;
+    --radius-lg: 14px;
+    --shadow:    0 4px 24px rgba(0,0,0,0.45);
+    --transition: 0.22s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ─── LIGHT THEME OVERRIDES ─────────────────────────────── */
+  html[data-theme="light"] {
+    --bg:        #f5f7fa;
+    --surface:   #ffffff;
+    --surface2:  #eef1f6;
+    --border:    #d4dae6;
+    --border2:   #bcc5d6;
+    --text:      #1e2a3a;
+    --muted:     #5a6f88;
+    --accent:    #c97d0a;
+    --accent2:   #0f9ea0;
+    --accent3:   #14855e;
+    --red:       #c0392b;
+    --blue:      #1a6fb5;
+    --purple:    #7c52cc;
+    --shadow:    0 4px 24px rgba(0,0,0,0.10);
+  }
+  html[data-theme="light"] body { background: var(--bg); }
+  html[data-theme="light"] nav {
+    background: rgba(245,247,250,0.92);
+  }
+  html[data-theme="light"] h1,
+  html[data-theme="light"] h2,
+  html[data-theme="light"] h3,
+  html[data-theme="light"] h4,
+  html[data-theme="light"] h5 { color: #0f1c2e; }
+  html[data-theme="light"] h3 { color: #2c4060; }
+  html[data-theme="light"] code,
+  html[data-theme="light"] pre {
+    background: #eef1f6;
+    border-color: var(--border);
+  }
+  html[data-theme="light"] .hero-grid { opacity: 0.12; }
+  html[data-theme="light"] .hero-glow {
+    background: radial-gradient(circle, rgba(201,125,10,0.10) 0%, transparent 70%);
+  }
+  html[data-theme="light"] .hero-glow2 {
+    background: radial-gradient(circle, rgba(15,158,160,0.08) 0%, transparent 70%);
+  }
+  html[data-theme="light"] .video-thumb {
+    background: linear-gradient(135deg, #dde3ee 0%, #e8edf5 50%, #d8dfec 100%);
+  }
+  html[data-theme="light"] .template-tree {
+    background: #eef1f6;
+    border-color: var(--border);
+  }
+  html[data-theme="light"] .prompt-box {
+    background: #e8f5f0;
+    border-color: rgba(20,133,94,0.3);
+  }
+  html[data-theme="light"] .do-card {
+    background: rgba(20,133,94,0.06);
+    border-color: rgba(20,133,94,0.25);
+  }
+  html[data-theme="light"] .dont-card {
+    background: rgba(192,57,43,0.05);
+    border-color: rgba(192,57,43,0.2);
+  }
+  html[data-theme="light"] .pr-issue.error { background: rgba(192,57,43,0.06); border-color: rgba(192,57,43,0.2); }
+  html[data-theme="light"] .pr-issue.warn  { background: rgba(201,125,10,0.06); border-color: rgba(201,125,10,0.2); }
+  html[data-theme="light"] .pr-issue.info  { background: rgba(15,158,160,0.06); border-color: rgba(15,158,160,0.2); }
+  html[data-theme="light"] .tdd-phase.red   { background: rgba(192,57,43,0.05);  border-color: rgba(192,57,43,0.2); }
+  html[data-theme="light"] .tdd-phase.green { background: rgba(20,133,94,0.05);  border-color: rgba(20,133,94,0.2); }
+  html[data-theme="light"] .tdd-phase.blue  { background: rgba(26,111,181,0.05); border-color: rgba(26,111,181,0.2); }
+  html[data-theme="light"] .scroll-top {
+    background: #fff;
+    border-color: var(--border2);
+  }
+  html[data-theme="light"] .hero-tag {
+    border-color: rgba(201,125,10,0.4);
+    background: rgba(201,125,10,0.08);
+  }
+
+  /* ─── THEME TOGGLE BUTTON ────────────────────────────────── */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    padding: 0.28rem 0.75rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .theme-toggle .toggle-icon { font-size: 0.85rem; transition: transform 0.4s ease; }
+  html[data-theme="light"] .theme-toggle .toggle-icon { transform: rotate(180deg); }
+
+  /* ─── RESET ──────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent2); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  img { max-width: 100%; }
+  ul { list-style: none; }
+
+  /* ─── TYPOGRAPHY ─────────────────────────────────────────── */
+  h1, h2, h3, h4, h5 { font-family: var(--display); font-weight: 700; line-height: 1.2; color: var(--text); }
+  h1 { font-size: clamp(2rem, 5vw, 3.4rem); }
+  h2 { font-size: clamp(1.4rem, 3vw, 2rem); }
+  h3 { font-size: 1.15rem; color: #b8c8dc; }
+  code, pre {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  pre { padding: 1.2rem 1.4rem; overflow-x: auto; line-height: 1.65; }
+  code:not(pre code) {
+    padding: 0.15em 0.45em;
+    color: var(--accent3);
+    font-size: 0.82rem;
+  }
+
+  /* ─── LAYOUT ─────────────────────────────────────────────── */
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
+  section { padding: 5rem 0; }
+  section + section { border-top: 1px solid var(--border); }
+
+  /* ─── NAV ────────────────────────────────────────────────── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(11,14,20,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0.7rem 0;
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .nav-brand {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .nav-brand::before {
+    content: '>';
+    color: var(--accent2);
+    font-weight: 700;
+  }
+  .nav-links {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .nav-links a {
+    font-size: 0.78rem;
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.03em;
+    transition: color var(--transition);
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--accent); text-decoration: none; }
+
+  /* ─── HERO ───────────────────────────────────────────────── */
+  .hero {
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 6rem 0;
+    border-top: none;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.25;
+    pointer-events: none;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,166,35,0.08) 0%, transparent 70%);
+    top: -100px; left: -100px;
+    pointer-events: none;
+  }
+  .hero-glow2 {
+    position: absolute;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(62,207,207,0.06) 0%, transparent 70%);
+    bottom: -100px; right: -100px;
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 780px; }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    border: 1px solid rgba(245,166,35,0.35);
+    background: rgba(245,166,35,0.07);
+    padding: 0.3rem 0.85rem;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .hero-tag::before { content: '◈'; }
+  .hero h1 { margin-bottom: 1.2rem; }
+  .hero h1 span { color: var(--accent); }
+  .hero-subtitle {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 560px;
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+  }
+  .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.6rem;
+    border-radius: var(--radius);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0b0e14;
+  }
+  .btn-primary:hover {
+    background: #ffb93e;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(245,166,35,0.35);
+    text-decoration: none;
+    color: #0b0e14;
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--accent2);
+    border: 1px solid var(--accent2);
+  }
+  .btn-secondary:hover {
+    background: rgba(62,207,207,0.1);
+    transform: translateY(-1px);
+    text-decoration: none;
+    color: var(--accent2);
+  }
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 3.5rem;
+    flex-wrap: wrap;
+  }
+  .hero-stat { font-family: var(--mono); }
+  .hero-stat-num { font-size: 1.5rem; color: var(--accent); font-weight: 700; }
+  .hero-stat-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  /* ─── SECTION HEADER ─────────────────────────────────────── */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .section-title { margin-bottom: 0.6rem; }
+  .section-desc { color: var(--muted); max-width: 580px; margin-bottom: 2.5rem; font-size: 0.95rem; }
+
+  /* ─── CARDS ──────────────────────────────────────────────── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.4rem;
+    transition: border-color var(--transition), transform var(--transition);
+  }
+  .card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+  /* ─── VIDEO PLACEHOLDER ──────────────────────────────────── */
+  .video-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: border-color var(--transition);
+  }
+  .video-card:hover { border-color: var(--accent); }
+  .video-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, var(--surface2) 0%, var(--surface) 50%, var(--surface2) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .video-thumb::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(255,255,255,0.01) 20px,
+      rgba(255,255,255,0.01) 40px
+    );
+  }
+  .video-play {
+    width: 52px; height: 52px;
+    background: rgba(245,166,35,0.15);
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    transition: all var(--transition);
+    position: relative; z-index: 1;
+  }
+  .video-thumb:hover .video-play {
+    background: var(--accent);
+    color: #0b0e14;
+    transform: scale(1.1);
+  }
+  .video-thumb-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 0 1rem;
+  }
+  .video-meta {
+    padding: 0.9rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .video-icon {
+    width: 28px; height: 28px;
+    background: rgba(245,166,35,0.12);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .video-title { font-size: 0.82rem; color: var(--text); font-weight: 600; }
+  .video-duration { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); margin-top: 0.1rem; }
+
+  /* ─── RESOURCE CARDS ─────────────────────────────────────── */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+  .resource-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+    transition: border-color var(--transition), background var(--transition);
+    text-decoration: none;
+    color: inherit;
+  }
+  .resource-card:hover {
+    border-color: var(--accent2);
+    background: rgba(62,207,207,0.04);
+    text-decoration: none;
+    color: inherit;
+  }
+  .resource-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+  .resource-title { font-size: 0.83rem; font-weight: 600; color: var(--text); margin-bottom: 0.2rem; }
+  .resource-desc { font-size: 0.74rem; color: var(--muted); line-height: 1.5; }
+  .resource-tag {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    color: var(--accent2);
+    border: 1px solid rgba(62,207,207,0.3);
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── SYSTEM DIAGRAM ─────────────────────────────────────── */
+  .diagram {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 2.5rem 0;
+  }
+  .diagram-node {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 0.9rem 1.4rem;
+    text-align: center;
+    min-width: 110px;
+    position: relative;
+  }
+  .diagram-node-icon { font-size: 1.3rem; margin-bottom: 0.3rem; }
+  .diagram-node-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .diagram-node-sub { font-size: 0.65rem; color: var(--muted); margin-top: 0.1rem; }
+  .diagram-node.accent1 { border-color: rgba(245,166,35,0.4); background: rgba(245,166,35,0.05); }
+  .diagram-node.accent2 { border-color: rgba(62,207,207,0.4); background: rgba(62,207,207,0.05); }
+  .diagram-node.accent3 { border-color: rgba(110,231,183,0.4); background: rgba(110,231,183,0.05); }
+  .diagram-node.accent4 { border-color: rgba(180,142,255,0.4); background: rgba(180,142,255,0.05); }
+  .diagram-arrow {
+    font-size: 1.1rem;
+    color: var(--muted);
+    padding: 0 0.4rem;
+    flex-shrink: 0;
+  }
+
+  /* ─── LIFECYCLE ──────────────────────────────────────────── */
+  .lifecycle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.6rem;
+  }
+  .lifecycle-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    text-align: center;
+  }
+  .lifecycle-step:hover, .lifecycle-step.active {
+    border-color: var(--accent);
+    background: rgba(245,166,35,0.06);
+  }
+  .lifecycle-step.active .lifecycle-num { color: var(--accent); }
+  .lifecycle-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+  .lifecycle-icon { font-size: 1.3rem; margin-bottom: 0.3rem; }
+  .lifecycle-label { font-size: 0.75rem; font-weight: 600; color: var(--text); }
+  .lifecycle-detail {
+    display: none;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-top: 1rem;
+    animation: fadeIn 0.2s ease;
+  }
+  .lifecycle-detail.show { display: block; }
+  .lifecycle-detail h4 { color: var(--accent); margin-bottom: 0.6rem; font-family: var(--mono); font-size: 0.85rem; }
+  .lifecycle-detail p { font-size: 0.88rem; color: var(--muted); }
+
+  /* ─── STEPPER ────────────────────────────────────────────── */
+  .stepper { display: flex; flex-direction: column; gap: 0; }
+  .step-item {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+  }
+  .step-spine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 48px;
+    flex-shrink: 0;
+  }
+  .step-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 2px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all var(--transition);
+    cursor: pointer;
+    z-index: 1;
+    margin-top: 2px;
+  }
+  .step-dot:hover, .step-item.open .step-dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0b0e14;
+  }
+  .step-line {
+    width: 2px;
+    background: var(--border);
+    flex: 1;
+    min-height: 16px;
+  }
+  .step-item:last-child .step-line { display: none; }
+  .step-content { flex: 1; padding: 0 0 2rem 1rem; }
+  .step-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 0.2rem 0;
+    user-select: none;
+  }
+  .step-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    font-family: var(--display);
+  }
+  .step-toggle {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    transition: transform var(--transition);
+    width: 20px;
+    text-align: center;
+  }
+  .step-item.open .step-toggle { transform: rotate(45deg); color: var(--accent); }
+  .step-body {
+    display: none;
+    padding-top: 1rem;
+    animation: fadeIn 0.2s ease;
+  }
+  .step-item.open .step-body { display: block; }
+  .step-body p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1rem; }
+  .step-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.2rem; }
+  @media (max-width: 680px) { .step-grid { grid-template-columns: 1fr; } }
+
+  /* ─── AI PROMPT ──────────────────────────────────────────── */
+  .prompt-box {
+    background: var(--surface2);
+    border: 1px solid rgba(110,231,183,0.25);
+    border-left: 3px solid var(--accent3);
+    border-radius: var(--radius);
+    padding: 1rem 1.2rem;
+    margin-top: 1rem;
+  }
+  .prompt-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--accent3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .prompt-text { font-family: var(--mono); font-size: 0.8rem; color: var(--text); line-height: 1.6; }
+  .prompt-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.7rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 0.25rem 0.6rem;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .prompt-copy:hover { border-color: var(--accent3); color: var(--accent3); }
+  .prompt-copy.copied { border-color: var(--accent3); color: var(--accent3); }
+
+  /* ─── CODE BLOCK ─────────────────────────────────────────── */
+  .code-block-wrap { position: relative; }
+  .code-label {
+    position: absolute;
+    top: 0.6rem; right: 0.7rem;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .code-comment { color: #4a6580; }
+  .code-kw { color: var(--purple); }
+  .code-fn { color: var(--blue); }
+  .code-str { color: var(--accent3); }
+  .code-num { color: var(--accent); }
+  .code-bad { color: var(--red); text-decoration: underline wavy var(--red); }
+  .code-good { color: var(--accent3); }
+
+  /* ─── PR ISSUES ──────────────────────────────────────────── */
+  .pr-issue {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 0.6rem;
+    font-size: 0.83rem;
+  }
+  .pr-issue.error { background: rgba(244,109,109,0.08); border: 1px solid rgba(244,109,109,0.2); }
+  .pr-issue.warn  { background: rgba(245,166,35,0.08);  border: 1px solid rgba(245,166,35,0.2); }
+  .pr-issue.info  { background: rgba(62,207,207,0.08);  border: 1px solid rgba(62,207,207,0.2); }
+  .pr-issue-icon { flex-shrink: 0; font-size: 0.9rem; }
+  .pr-issue-text { color: var(--text); }
+  .pr-issue-text strong { display: block; margin-bottom: 0.2rem; }
+  .pr-issue-text span { color: var(--muted); font-size: 0.78rem; }
+
+  /* ─── DO / DON'T ─────────────────────────────────────────── */
+  .do-dont {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  @media (max-width: 600px) { .do-dont { grid-template-columns: 1fr; } }
+  .do-card { background: rgba(110,231,183,0.05); border: 1px solid rgba(110,231,183,0.2); border-radius: var(--radius-lg); padding: 1.2rem; }
+  .dont-card { background: rgba(244,109,109,0.05); border: 1px solid rgba(244,109,109,0.2); border-radius: var(--radius-lg); padding: 1.2rem; }
+  .do-card h4 { color: var(--accent3); font-family: var(--mono); font-size: 0.8rem; margin-bottom: 0.8rem; }
+  .dont-card h4 { color: var(--red); font-family: var(--mono); font-size: 0.8rem; margin-bottom: 0.8rem; }
+  .do-dont li {
+    font-size: 0.83rem;
+    color: var(--text);
+    padding: 0.3rem 0;
+    padding-left: 1.1rem;
+    position: relative;
+  }
+  .do-card li::before { content: '✓'; position: absolute; left: 0; color: var(--accent3); }
+  .dont-card li::before { content: '✗'; position: absolute; left: 0; color: var(--red); }
+
+  /* ─── PROMPT LIBRARY ─────────────────────────────────────── */
+  .prompt-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+  .tab-btn {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: 0.04em;
+  }
+  .tab-btn:hover, .tab-btn.active {
+    background: rgba(245,166,35,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .prompt-panel { display: none; }
+  .prompt-panel.active { display: block; }
+  .prompt-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.2rem;
+    margin-bottom: 0.7rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .prompt-item-text { font-family: var(--mono); font-size: 0.8rem; color: var(--text); line-height: 1.6; flex: 1; }
+
+  /* ─── CHECKLIST ──────────────────────────────────────────── */
+  .checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  @media (max-width: 600px) { .checklist { grid-template-columns: 1fr; } }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    transition: border-color var(--transition);
+  }
+  .check-item:hover { border-color: var(--border2); }
+  .check-item.checked { border-color: rgba(110,231,183,0.3); background: rgba(110,231,183,0.04); }
+  .check-box {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border2);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem;
+    transition: all var(--transition);
+  }
+  .check-item.checked .check-box {
+    background: var(--accent3);
+    border-color: var(--accent3);
+    color: #0b0e14;
+  }
+  .check-text { font-size: 0.82rem; color: var(--text); line-height: 1.4; }
+  .check-text span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+  .progress-bar-wrap { margin-top: 1.5rem; }
+  .progress-label { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); margin-bottom: 0.4rem; }
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent3), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* ─── TDD FLOW ───────────────────────────────────────────── */
+  .tdd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  @media (max-width: 680px) { .tdd-grid { grid-template-columns: 1fr; } }
+  .tdd-phase {
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+    text-align: center;
+  }
+  .tdd-phase.red { background: rgba(244,109,109,0.06); border: 1px solid rgba(244,109,109,0.25); }
+  .tdd-phase.green { background: rgba(110,231,183,0.06); border: 1px solid rgba(110,231,183,0.25); }
+  .tdd-phase.blue { background: rgba(77,166,255,0.06); border: 1px solid rgba(77,166,255,0.25); }
+  .tdd-phase-label { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .tdd-phase.red .tdd-phase-label { color: var(--red); }
+  .tdd-phase.green .tdd-phase-label { color: var(--accent3); }
+  .tdd-phase.blue .tdd-phase-label { color: var(--blue); }
+  .tdd-phase h4 { font-size: 0.88rem; margin-bottom: 0.3rem; }
+  .tdd-phase p { font-size: 0.76rem; color: var(--muted); }
+
+  /* ─── CI/CD PIPELINE ─────────────────────────────────────── */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+    justify-content: center;
+  }
+  .pipeline-step {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.6rem 0.9rem;
+    text-align: center;
+    min-width: 80px;
+  }
+  .pipeline-step-icon { font-size: 1rem; margin-bottom: 0.2rem; }
+  .pipeline-step-label { font-family: var(--mono); font-size: 0.65rem; color: var(--text); }
+  .pipeline-arrow { color: var(--muted); font-size: 0.9rem; }
+
+  /* ─── TEMPLATE ───────────────────────────────────────────── */
+  .template-tree {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 2;
+    color: var(--text);
+  }
+  .tree-dir { color: var(--blue); }
+  .tree-file { color: var(--muted); }
+  .tree-comment { color: #3a5070; }
+
+  /* ─── FOOTER ─────────────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 0;
+    text-align: center;
+  }
+  footer p { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+  footer span { color: var(--accent); }
+
+  /* ─── ANIMATIONS ─────────────────────────────────────────── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeIn 0.5s ease both; }
+
+  /* ─── MISC ───────────────────────────────────────────────── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+  .badge-amber { background: rgba(245,166,35,0.15); color: var(--accent); border: 1px solid rgba(245,166,35,0.25); }
+  .badge-teal  { background: rgba(62,207,207,0.12);  color: var(--accent2); border: 1px solid rgba(62,207,207,0.25); }
+  .badge-green { background: rgba(110,231,183,0.12); color: var(--accent3); border: 1px solid rgba(110,231,183,0.25); }
+  .badge-red   { background: rgba(244,109,109,0.12); color: var(--red);     border: 1px solid rgba(244,109,109,0.25); }
+  .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  @media (max-width: 680px) { .two-col { grid-template-columns: 1fr; } }
+  .tag-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
+
+  /* scroll indicator */
+  .scroll-top {
+    position: fixed;
+    bottom: 2rem; right: 2rem;
+    width: 40px; height: 40px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--muted);
+    transition: all var(--transition);
+    z-index: 99;
+  }
+  .scroll-top:hover { border-color: var(--accent); color: var(--accent); }
+  .scroll-top.show { display: flex; }
+</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-12462XDSMS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-12462XDSMS');
+</script>
+</head>
+<body>
+
+<!-- ─── NAV ─────────────────────────────────────────────────── -->
+<nav>
+  <div class="container nav-inner">
+    <div class="nav-brand">induction.v2</div>
+    <div class="nav-links">
+      <a href="#fullstack">Full-Stack</a>
+      <a href="#lifecycle">Lifecycle</a>
+      <a href="#workflow">Workflow</a>
+      <a href="#template">Template</a>
+      <a href="#tdd">TDD</a>
+      <a href="#ai-guide">AI Guide</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#checklist">Checklist</a>
+    </div>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">
+      <span class="toggle-icon">☀</span>
+      <span class="toggle-label">Light</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ─── HERO ──────────────────────────────────────────────────── -->
+<section class="hero" id="top">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="container">
+    <div class="hero-content fade-in">
+      <div class="hero-tag">Developer Induction Resource</div>
+      <h1>AI-Assisted Full-Stack<br><span>Code-to-Cloud</span> Induction</h1>
+      <p class="hero-subtitle">Learn to design, build, test, and deploy production-ready systems. This program builds disciplined engineering thinking — not shortcuts.</p>
+      <div class="hero-cta">
+        <a href="#workflow" class="btn btn-primary">▶ Start Learning</a>
+        <a href="#template" class="btn btn-secondary">⬡ View Full-Stack Template</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num">7</div>
+          <div class="hero-stat-label">Core Skills</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">12</div>
+          <div class="hero-stat-label">Learning Modules</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">40+</div>
+          <div class="hero-stat-label">Curated Resources</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">0</div>
+          <div class="hero-stat-label">Shortcuts Allowed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FULL-STACK THINKING ───────────────────────────────────── -->
+<section id="fullstack">
+  <div class="container">
+    <div class="section-label">Module 01</div>
+    <h2 class="section-title">What is Full-Stack Thinking?</h2>
+    <p class="section-desc">Full-stack engineering is not about knowing all the tools. It's about understanding how systems fit together — and where they break.</p>
+
+    <!-- System Diagram -->
+    <div class="diagram">
+      <div class="diagram-node accent1">
+        <div class="diagram-node-icon">🖥</div>
+        <div class="diagram-node-label">Frontend</div>
+        <div class="diagram-node-sub">React / HTML</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-node accent2">
+        <div class="diagram-node-icon">⚙</div>
+        <div class="diagram-node-label">API Layer</div>
+        <div class="diagram-node-sub">REST / GraphQL</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-node accent3">
+        <div class="diagram-node-icon">🔧</div>
+        <div class="diagram-node-label">Service</div>
+        <div class="diagram-node-sub">Business Logic</div>
+      </div>
+      <div class="diagram-arrow">→</div>
+      <div class="diagram-node accent4">
+        <div class="diagram-node-icon">🗄</div>
+        <div class="diagram-node-label">Database</div>
+        <div class="diagram-node-sub">SQL / NoSQL</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="badge badge-amber" style="margin-bottom:0.7rem">Systems over features</div>
+          <p style="font-size:0.85rem;color:var(--muted)">Every feature you write exists within a system. Before touching code, ask: where does this fit in the flow? Who calls it? What does it call?</p>
+        </div>
+        <div class="card" style="margin-bottom:1rem">
+          <div class="badge badge-teal" style="margin-bottom:0.7rem">Contracts between layers</div>
+          <p style="font-size:0.85rem;color:var(--muted)">API contracts, data models, and interface definitions are the agreements layers make with each other. Break a contract, break the system.</p>
+        </div>
+        <div class="card">
+          <div class="badge badge-green" style="margin-bottom:0.7rem">Debugging mindset</div>
+          <p style="font-size:0.85rem;color:var(--muted)">Follow the data: UI → network request → API handler → service → DB → response. Reproduce before you fix. Understand before you patch.</p>
+        </div>
+      </div>
+      <div>
+        <div class="video-card">
+          <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here in a deployed version</div>'">
+            <div class="video-play">▶</div>
+            <div class="video-thumb-label">Watch: Full-Stack Thinking Explained</div>
+          </div>
+          <div class="video-meta">
+            <div class="video-icon">📹</div>
+            <div>
+              <div class="video-title">Full-Stack Thinking Explained</div>
+              <div class="video-duration">~18 min · Fundamentals</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:1rem">
+          <div style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">📚 Resources</div>
+          <div class="resource-grid" style="grid-template-columns:1fr">
+            <a href="https://martinfowler.com/architecture/" target="_blank" class="resource-card">
+              <div class="resource-icon">🏗</div>
+              <div>
+                <div class="resource-title">Software Architecture Guide — Fowler</div>
+                <div class="resource-desc">Patterns for thinking about system structure from Martin Fowler's catalog.</div>
+                <div class="resource-tag">architecture</div>
+              </div>
+            </a>
+            <a href="https://12factor.net/" target="_blank" class="resource-card">
+              <div class="resource-icon">📋</div>
+              <div>
+                <div class="resource-title">The Twelve-Factor App</div>
+                <div class="resource-desc">Methodology for building scalable, maintainable web services.</div>
+                <div class="resource-tag">methodology</div>
+              </div>
+            </a>
+            <a href="https://roadmap.sh/full-stack" target="_blank" class="resource-card">
+              <div class="resource-icon">🗺</div>
+              <div>
+                <div class="resource-title">Full-Stack Roadmap — roadmap.sh</div>
+                <div class="resource-desc">Visual, community-curated learning path for full-stack development.</div>
+                <div class="resource-tag">roadmap</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SYSTEM LIFECYCLE ───────────────────────────────────────── -->
+<section id="lifecycle">
+  <div class="container">
+    <div class="section-label">Module 02</div>
+    <h2 class="section-title">System Lifecycle Overview</h2>
+    <p class="section-desc">Every production system follows a lifecycle. Understanding each phase prevents costly rework. Click a step to explore it.</p>
+
+    <div class="lifecycle-grid" id="lifecycleGrid">
+      <div class="lifecycle-step active" data-step="0" onclick="setLifecycle(0)">
+        <div class="lifecycle-num">01</div>
+        <div class="lifecycle-icon">💬</div>
+        <div class="lifecycle-label">Problem</div>
+      </div>
+      <div class="lifecycle-step" data-step="1" onclick="setLifecycle(1)">
+        <div class="lifecycle-num">02</div>
+        <div class="lifecycle-icon">📝</div>
+        <div class="lifecycle-label">Spec</div>
+      </div>
+      <div class="lifecycle-step" data-step="2" onclick="setLifecycle(2)">
+        <div class="lifecycle-num">03</div>
+        <div class="lifecycle-icon">⚙</div>
+        <div class="lifecycle-label">API Design</div>
+      </div>
+      <div class="lifecycle-step" data-step="3" onclick="setLifecycle(3)">
+        <div class="lifecycle-num">04</div>
+        <div class="lifecycle-icon">💻</div>
+        <div class="lifecycle-label">Implementation</div>
+      </div>
+      <div class="lifecycle-step" data-step="4" onclick="setLifecycle(4)">
+        <div class="lifecycle-num">05</div>
+        <div class="lifecycle-icon">🧪</div>
+        <div class="lifecycle-label">Testing</div>
+      </div>
+      <div class="lifecycle-step" data-step="5" onclick="setLifecycle(5)">
+        <div class="lifecycle-num">06</div>
+        <div class="lifecycle-icon">🚀</div>
+        <div class="lifecycle-label">Deployment</div>
+      </div>
+      <div class="lifecycle-step" data-step="6" onclick="setLifecycle(6)">
+        <div class="lifecycle-num">07</div>
+        <div class="lifecycle-icon">📊</div>
+        <div class="lifecycle-label">Monitoring</div>
+      </div>
+    </div>
+
+    <div class="lifecycle-detail show" id="lifecycleDetail">
+      <h4>01 · Problem Definition</h4>
+      <p>Before any code is written, the problem must be clearly stated. Who is the user? What is the pain? What does success look like? This step produces a Problem Statement that every subsequent decision is tested against. If you can't explain the problem in two sentences, you don't understand it well enough to build it.</p>
+    </div>
+
+    <div class="two-col" style="margin-top:2rem">
+      <div class="video-card">
+        <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+          <div class="video-play">▶</div>
+          <div class="video-thumb-label">System Lifecycle Walkthrough</div>
+        </div>
+        <div class="video-meta">
+          <div class="video-icon">📹</div>
+          <div>
+            <div class="video-title">System Lifecycle Walkthrough</div>
+            <div class="video-duration">~22 min · System Design</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.8rem">📚 Resources</div>
+        <div class="resource-grid" style="grid-template-columns:1fr">
+          <a href="https://github.com/donnemartin/system-design-primer" target="_blank" class="resource-card">
+            <div class="resource-icon">📖</div>
+            <div>
+              <div class="resource-title">System Design Primer — GitHub</div>
+              <div class="resource-desc">200k+ star repo covering system design concepts from fundamentals to real-world patterns.</div>
+              <div class="resource-tag">system design</div>
+            </div>
+          </a>
+          <a href="https://www.youtube.com/@ByteByteGo" target="_blank" class="resource-card">
+            <div class="resource-icon">▶</div>
+            <div>
+              <div class="resource-title">ByteByteGo — System Design Videos</div>
+              <div class="resource-desc">Concise visual explanations of distributed systems and architecture patterns.</div>
+              <div class="resource-tag">video series</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── LEARNING WORKFLOW (STEPPER) ───────────────────────────── -->
+<section id="workflow">
+  <div class="container">
+    <div class="section-label">Module 03</div>
+    <h2 class="section-title">Learning Workflow</h2>
+    <p class="section-desc">Seven steps that take you from reading an unknown codebase to shipping a validated pull request. Follow this sequence — in order.</p>
+
+    <div class="stepper" id="stepper">
+
+      <!-- Step 1 -->
+      <div class="step-item open">
+        <div class="step-spine">
+          <div class="step-dot" onclick="toggleStep(this)">1</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-header" onclick="toggleStep(this.parentElement.previousElementSibling.querySelector('.step-dot'))">
+            <div class="step-title">Codebase Reverse Engineering</div>
+            <div class="step-toggle">+</div>
+          </div>
+          <div class="step-body">
+            <p>Before writing a single line, you must understand what already exists. Map the architecture: what are the entry points? What are the data models? Where is business logic concentrated? Read tests before reading implementation — they describe intended behaviour, not just actual behaviour.</p>
+            <div class="step-grid">
+              <div class="video-card">
+                <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+                  <div class="video-play">▶</div>
+                  <div class="video-thumb-label">Reading Codebases Like a Pro</div>
+                </div>
+                <div class="video-meta">
+                  <div class="video-icon">📹</div>
+                  <div>
+                    <div class="video-title">Reading Codebases Like a Pro</div>
+                    <div class="video-duration">~14 min</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="resource-grid" style="grid-template-columns:1fr">
+                  <a href="https://www.codesee.io/learning-center/codebase-understanding" target="_blank" class="resource-card">
+                    <div class="resource-icon">🔍</div>
+                    <div>
+                      <div class="resource-title">Codebase Understanding Guide</div>
+                      <div class="resource-desc">Structured approach to navigating unfamiliar codebases quickly.</div>
+                      <div class="resource-tag">reference</div>
+                    </div>
+                  </a>
+                  <a href="https://sourcegraph.com/blog/code-reading" target="_blank" class="resource-card">
+                    <div class="resource-icon">📄</div>
+                    <div>
+                      <div class="resource-title">How to Read Code — Sourcegraph</div>
+                      <div class="resource-desc">Practical techniques for tracing data and control flow through unfamiliar systems.</div>
+                      <div class="resource-tag">article</div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="prompt-box">
+              <div class="prompt-label">💡 Try with AI</div>
+              <div class="prompt-text" id="p1">"I'm reading a new codebase. Here is the directory structure and main entry file. Help me map the data flow from the API endpoint to the database layer. Point out any anti-patterns you notice."</div>
+              <button class="prompt-copy" onclick="copyPrompt('p1',this)">⎘ Copy prompt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-item">
+        <div class="step-spine">
+          <div class="step-dot" onclick="toggleStep(this)">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-header" onclick="toggleStep(this.parentElement.previousElementSibling.querySelector('.step-dot'))">
+            <div class="step-title">Spec Formation</div>
+            <div class="step-toggle">+</div>
+          </div>
+          <div class="step-body">
+            <p>A spec is not a to-do list. It is a precise description of what the system must do, under what constraints, and what constitutes success. Good specs prevent you from building the wrong thing correctly. Define inputs, outputs, edge cases, and validation rules before opening your editor.</p>
+            <div class="step-grid">
+              <div class="video-card">
+                <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+                  <div class="video-play">▶</div>
+                  <div class="video-thumb-label">Business Logic to Technical Spec</div>
+                </div>
+                <div class="video-meta">
+                  <div class="video-icon">📹</div>
+                  <div>
+                    <div class="video-title">Business Logic → Technical Spec</div>
+                    <div class="video-duration">~16 min</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="resource-grid" style="grid-template-columns:1fr">
+                  <a href="https://www.joelonsoftware.com/2000/10/02/painless-functional-specifications-part-1-why-bother/" target="_blank" class="resource-card">
+                    <div class="resource-icon">📝</div>
+                    <div>
+                      <div class="resource-title">Painless Functional Specs — Joel on Software</div>
+                      <div class="resource-desc">Classic series on writing specs that developers can actually build from.</div>
+                      <div class="resource-tag">classic</div>
+                    </div>
+                  </a>
+                  <a href="https://www.industriallogic.com/blog/behavior-driven-development/" target="_blank" class="resource-card">
+                    <div class="resource-icon">🔄</div>
+                    <div>
+                      <div class="resource-title">BDD — Behaviour-Driven Development</div>
+                      <div class="resource-desc">Spec-first approach using Given/When/Then to describe system behaviour.</div>
+                      <div class="resource-tag">methodology</div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="prompt-box">
+              <div class="prompt-label">💡 Try with AI</div>
+              <div class="prompt-text" id="p2">"Here is a business requirement: [paste requirement]. Convert this into a technical spec with: 1) Inputs and types, 2) Expected outputs, 3) Validation rules, 4) Edge cases, 5) Error states. Be strict."</div>
+              <button class="prompt-copy" onclick="copyPrompt('p2',this)">⎘ Copy prompt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step-item">
+        <div class="step-spine">
+          <div class="step-dot" onclick="toggleStep(this)">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-header" onclick="toggleStep(this.parentElement.previousElementSibling.querySelector('.step-dot'))">
+            <div class="step-title">API-First Design</div>
+            <div class="step-toggle">+</div>
+          </div>
+          <div class="step-body">
+            <p>Design your API contract before writing any backend or frontend code. The API is the boundary between layers. Define endpoints, request shapes, response shapes, HTTP status codes, and error formats explicitly. API-first means consumers and producers can be developed in parallel.</p>
+            <div class="step-grid">
+              <div class="video-card">
+                <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+                  <div class="video-play">▶</div>
+                  <div class="video-thumb-label">Designing APIs Correctly</div>
+                </div>
+                <div class="video-meta">
+                  <div class="video-icon">📹</div>
+                  <div>
+                    <div class="video-title">Designing APIs Correctly</div>
+                    <div class="video-duration">~20 min</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="resource-grid" style="grid-template-columns:1fr">
+                  <a href="https://www.openapis.org/" target="_blank" class="resource-card">
+                    <div class="resource-icon">📋</div>
+                    <div>
+                      <div class="resource-title">OpenAPI Specification</div>
+                      <div class="resource-desc">Industry standard for defining REST APIs with machine-readable contracts.</div>
+                      <div class="resource-tag">standard</div>
+                    </div>
+                  </a>
+                  <a href="https://restfulapi.net/" target="_blank" class="resource-card">
+                    <div class="resource-icon">🌐</div>
+                    <div>
+                      <div class="resource-title">RESTful API Design Guide</div>
+                      <div class="resource-desc">Comprehensive guide to REST conventions, HTTP verbs, and status codes.</div>
+                      <div class="resource-tag">reference</div>
+                    </div>
+                  </a>
+                  <a href="https://swagger.io/tools/swaggerhub/" target="_blank" class="resource-card">
+                    <div class="resource-icon">⚒</div>
+                    <div>
+                      <div class="resource-title">SwaggerHub — API Design Platform</div>
+                      <div class="resource-desc">Design, document, and mock APIs before building the backend.</div>
+                      <div class="resource-tag">tool</div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="prompt-box">
+              <div class="prompt-label">💡 Try with AI</div>
+              <div class="prompt-text" id="p3">"Design a REST API for [feature]. Include: endpoint paths, HTTP methods, request body schema, response schema for success and error cases, HTTP status codes, and validation constraints. Output as OpenAPI YAML."</div>
+              <button class="prompt-copy" onclick="copyPrompt('p3',this)">⎘ Copy prompt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="step-item">
+        <div class="step-spine">
+          <div class="step-dot" onclick="toggleStep(this)">4</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-header" onclick="toggleStep(this.parentElement.previousElementSibling.querySelector('.step-dot'))">
+            <div class="step-title">TDD Across the Stack</div>
+            <div class="step-toggle">+</div>
+          </div>
+          <div class="step-body">
+            <p>Test-Driven Development is a design discipline, not just a testing strategy. Write the failing test first. It forces you to define what "done" looks like before you start building. Then write the minimal code to make it pass. Refactor. Repeat. The cycle is: <strong style="color:var(--red)">Red</strong> → <strong style="color:var(--accent3)">Green</strong> → <strong style="color:var(--blue)">Refactor</strong>.</p>
+            <div class="tdd-grid" style="margin:1rem 0">
+              <div class="tdd-phase red">
+                <div class="tdd-phase-label">🔴 Red</div>
+                <h4>Write Failing Test</h4>
+                <p>Define expected behaviour. Test must fail — if it passes, you don't understand the requirement.</p>
+              </div>
+              <div class="tdd-phase green">
+                <div class="tdd-phase-label">🟢 Green</div>
+                <h4>Make It Pass</h4>
+                <p>Write the minimal implementation to pass the test. No more, no less.</p>
+              </div>
+              <div class="tdd-phase blue">
+                <div class="tdd-phase-label">🔵 Refactor</div>
+                <h4>Clean Up</h4>
+                <p>Improve code quality while keeping tests green. This is where craft happens.</p>
+              </div>
+            </div>
+            <div class="step-grid">
+              <div class="video-card">
+                <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+                  <div class="video-play">▶</div>
+                  <div class="video-thumb-label">TDD for Backend Systems</div>
+                </div>
+                <div class="video-meta">
+                  <div class="video-icon">📹</div>
+                  <div>
+                    <div class="video-title">TDD for Backend Systems</div>
+                    <div class="video-duration">~25 min</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="resource-grid" style="grid-template-columns:1fr">
+                  <a href="https://martinfowler.com/bliki/TestDrivenDevelopment.html" target="_blank" class="resource-card">
+                    <div class="resource-icon">📖</div>
+                    <div>
+                      <div class="resource-title">TDD Explained — Martin Fowler</div>
+                      <div class="resource-desc">Concise, precise definition of TDD and why it is a design tool, not a testing tool.</div>
+                      <div class="resource-tag">reference</div>
+                    </div>
+                  </a>
+                  <a href="https://obeythetestinggoat.com/" target="_blank" class="resource-card">
+                    <div class="resource-icon">🐐</div>
+                    <div>
+                      <div class="resource-title">Obey the Testing Goat (TDD w/ Python)</div>
+                      <div class="resource-desc">Free book on TDD applied to a real web application, front to back.</div>
+                      <div class="resource-tag">book · free</div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="prompt-box">
+              <div class="prompt-label">💡 Try with AI</div>
+              <div class="prompt-text" id="p4">"Here is a function signature: [paste signature]. Generate comprehensive test cases including: happy path, boundary values, invalid inputs, and edge cases. Use pytest. Do not implement the function — only the tests."</div>
+              <button class="prompt-copy" onclick="copyPrompt('p4',this)">⎘ Copy prompt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="step-item">
+        <div class="step-spine">
+          <div class="step-dot" onclick="toggleStep(this)">5</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-header" onclick="toggleStep(this.parentElement.previousElementSibling.querySelector('.step-dot'))">
+            <div class="step-title">Implementation</div>
+            <div class="step-toggle">+</div>
+          </div>
+          <div class="step-body">
+            <p>Implement to pass tests, not to impress. Prefer clarity over cleverness. Small, focused functions. Strong naming. Explicit validation. Handle errors at the boundary, not deep in the call stack. Separate concerns: the function that validates should not be the function that persists.</p>
+            <div class="code-block-wrap">
+              <pre><span class="code-comment"># ✅ Clear separation of concerns</span>
+<span class="code-kw">def</span> <span class="code-fn">create_task</span>(request_json):
+    title = request_json.get(<span class="code-str">"title"</span>)
+    <span class="code-kw">if not</span> title <span class="code-kw">or not</span> isinstance(title, str):
+        <span class="code-kw">return</span> {<span class="code-str">"error"</span>: <span class="code-str">"INVALID_INPUT"</span>, <span class="code-str">"field"</span>: <span class="code-str">"title"</span>}, <span class="code-num">400</span>
+    task_id = save_task(title.strip())
+    <span class="code-kw">return</span> {<span class="code-str">"id"</span>: task_id, <span class="code-str">"status"</span>: <span class="code-str">"created"</span>}, <span class="code-num">201</span></pre>
+              <div class="code-label">python</div>
+            </div>
+            <div class="step-grid" style="margin-top:1rem">
+              <div class="video-card">
+                <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+                  <div class="video-play">▶</div>
+                  <div class="video-thumb-label">Clean Code in Practice</div>
+                </div>
+                <div class="video-meta">
+                  <div class="video-icon">📹</div>
+                  <div>
+                    <div class="video-title">Clean Code in Practice</div>
+                    <div class="video-duration">~19 min</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="resource-grid" style="grid-template-columns:1fr">
+                  <a href="https://refactoring.guru/refactoring" target="_blank" class="resource-card">
+                    <div class="resource-icon">♻</div>
+                    <div>
+                      <div class="resource-title">Refactoring Guru</div>
+                      <div class="resource-desc">Catalog of code smells and refactoring patterns with visual examples.</div>
+                      <div class="resource-tag">reference</div>
+                    </div>
+                  </a>
+                  <a href="https://google.github.io/styleguide/" target="_blank" class="resource-card">
+                    <div class="resource-icon">📏</div>
+                    <div>
+                      <div class="resource-title">Google Style Guides</div>
+                      <div class="resource-desc">Style guides for Python, Go, TypeScript, and more from Google engineering.</div>
+                      <div class="resource-tag">style guide</div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="prompt-box">
+              <div class="prompt-label">💡 Try with AI</div>
+              <div class="prompt-text" id="p5">"Here is my implementation: [paste code]. Review it against these failing tests: [paste tests]. Identify: 1) why tests fail, 2) what the minimal fix is, 3) any other bugs you see. Do not rewrite the whole thing."</div>
+              <button class="prompt-copy" onclick="copyPrompt('p5',this)">⎘ Copy prompt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 6 -->
+      <div class="step-item">
+        <div class="step-spine">
+          <div class="step-dot" onclick="toggleStep(this)">6</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-header" onclick="toggleStep(this.parentElement.previousElementSibling.querySelector('.step-dot'))">
+            <div class="step-title">AI Collaboration</div>
+            <div class="step-toggle">+</div>
+          </div>
+          <div class="step-body">
+            <p>AI is a collaborator, not an oracle. Use it to accelerate tasks you already understand — not to shortcut understanding. The moment you accept AI output you cannot explain or verify, you have made a liability. Always: understand before accepting, verify against tests, and document what you used AI for.</p>
+            <div class="step-grid">
+              <div class="video-card">
+                <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+                  <div class="video-play">▶</div>
+                  <div class="video-thumb-label">Using AI Effectively for Development</div>
+                </div>
+                <div class="video-meta">
+                  <div class="video-icon">📹</div>
+                  <div>
+                    <div class="video-title">Using AI Effectively for Development</div>
+                    <div class="video-duration">~17 min</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="resource-grid" style="grid-template-columns:1fr">
+                  <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" class="resource-card">
+                    <div class="resource-icon">🧠</div>
+                    <div>
+                      <div class="resource-title">Prompt Engineering Guide — Anthropic</div>
+                      <div class="resource-desc">Official guide on how to write effective prompts for Claude and LLMs generally.</div>
+                      <div class="resource-tag">official docs</div>
+                    </div>
+                  </a>
+                  <a href="https://www.promptingguide.ai/" target="_blank" class="resource-card">
+                    <div class="resource-icon">📌</div>
+                    <div>
+                      <div class="resource-title">Prompting Guide — DAIR.AI</div>
+                      <div class="resource-desc">Comprehensive, research-backed guide to prompt engineering techniques.</div>
+                      <div class="resource-tag">research</div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="prompt-box">
+              <div class="prompt-label">💡 Try with AI</div>
+              <div class="prompt-text" id="p6">"I used AI to generate this code: [paste code]. Critique it as a senior engineer would: check for edge cases, validation gaps, naming clarity, and potential runtime errors. Explain each issue — don't just fix it."</div>
+              <button class="prompt-copy" onclick="copyPrompt('p6',this)">⎘ Copy prompt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 7 -->
+      <div class="step-item">
+        <div class="step-spine">
+          <div class="step-dot" onclick="toggleStep(this)">7</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-content">
+          <div class="step-header" onclick="toggleStep(this.parentElement.previousElementSibling.querySelector('.step-dot'))">
+            <div class="step-title">PR Validation Loop</div>
+            <div class="step-toggle">+</div>
+          </div>
+          <div class="step-body">
+            <p>A pull request is not a delivery mechanism — it is a review artifact. It must tell a complete story: what changed, why, what was tested, and what could break. Before requesting a review, review your own PR as if you are the most demanding engineer on the team.</p>
+            <div class="step-grid">
+              <div class="video-card">
+                <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+                  <div class="video-play">▶</div>
+                  <div class="video-thumb-label">How to Review Code Like a Senior Engineer</div>
+                </div>
+                <div class="video-meta">
+                  <div class="video-icon">📹</div>
+                  <div>
+                    <div class="video-title">Review Code Like a Senior Engineer</div>
+                    <div class="video-duration">~21 min</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="resource-grid" style="grid-template-columns:1fr">
+                  <a href="https://google.github.io/eng-practices/review/" target="_blank" class="resource-card">
+                    <div class="resource-icon">✅</div>
+                    <div>
+                      <div class="resource-title">Code Review Developer Guide — Google</div>
+                      <div class="resource-desc">Google's engineering practices guide for code review: reviewer and author perspectives.</div>
+                      <div class="resource-tag">guide</div>
+                    </div>
+                  </a>
+                  <a href="https://www.conventionalcommits.org/" target="_blank" class="resource-card">
+                    <div class="resource-icon">📝</div>
+                    <div>
+                      <div class="resource-title">Conventional Commits</div>
+                      <div class="resource-desc">Structured commit message format for readable git history and automated changelogs.</div>
+                      <div class="resource-tag">standard</div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="prompt-box">
+              <div class="prompt-label">💡 Try with AI</div>
+              <div class="prompt-text" id="p7">"Review this pull request diff as a senior backend engineer: [paste diff]. Check for: missing input validation, API contract consistency, error handling completeness, test coverage gaps, and performance red flags. Be specific about line numbers."</div>
+              <button class="prompt-copy" onclick="copyPrompt('p7',this)">⎘ Copy prompt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── TEMPLATE ────────────────────────────────────────────────── -->
+<section id="template">
+  <div class="container">
+    <div class="section-label">Module 04</div>
+    <h2 class="section-title">Full-Stack GitHub Template</h2>
+    <p class="section-desc">Every project starts with structure. This template enforces separation of concerns and forces you to document intent before coding.</p>
+
+    <div class="two-col">
+      <div>
+        <div class="template-tree">
+<span class="tree-dir">my-project/</span>
+├── <span class="tree-dir">frontend/</span>          <span class="tree-comment"># UI layer</span>
+│   ├── <span class="tree-file">src/</span>
+│   └── <span class="tree-file">public/</span>
+├── <span class="tree-dir">backend/</span>           <span class="tree-comment"># API + business logic</span>
+│   ├── <span class="tree-file">api/</span>
+│   ├── <span class="tree-file">services/</span>
+│   └── <span class="tree-file">models/</span>
+├── <span class="tree-dir">tests/</span>             <span class="tree-comment"># All test suites</span>
+│   ├── <span class="tree-file">unit/</span>
+│   ├── <span class="tree-file">integration/</span>
+│   └── <span class="tree-file">e2e/</span>
+├── <span class="tree-dir">docs/</span>              <span class="tree-comment"># Required documentation</span>
+│   ├── <span class="tree-file">problem-statement.md</span>
+│   ├── <span class="tree-file">system-design.md</span>
+│   ├── <span class="tree-file">api-contracts.md</span>
+│   ├── <span class="tree-file">data-models.md</span>
+│   ├── <span class="tree-file">test-strategy.md</span>
+│   └── <span class="tree-file">ai-usage-log.md</span>
+└── <span class="tree-file">README.md</span>
+        </div>
+        <div style="margin-top:1rem">
+          <button class="btn btn-primary" onclick="copyTemplate(this)" style="width:100%;justify-content:center">
+            ⬡ Copy Full-Stack Starter Template
+          </button>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:0.8rem">
+          <div class="badge badge-amber" style="margin-bottom:0.5rem">README must include</div>
+          <ul style="font-size:0.82rem;color:var(--muted);display:flex;flex-direction:column;gap:0.4rem;margin-top:0.5rem">
+            <li style="display:flex;gap:0.5rem"><span style="color:var(--accent)">▸</span> Problem Statement</li>
+            <li style="display:flex;gap:0.5rem"><span style="color:var(--accent)">▸</span> System Design overview</li>
+            <li style="display:flex;gap:0.5rem"><span style="color:var(--accent)">▸</span> API Contracts (endpoints + schemas)</li>
+            <li style="display:flex;gap:0.5rem"><span style="color:var(--accent)">▸</span> Data Models</li>
+            <li style="display:flex;gap:0.5rem"><span style="color:var(--accent)">▸</span> Test Strategy</li>
+            <li style="display:flex;gap:0.5rem"><span style="color:var(--accent)">▸</span> AI Usage Log (mandatory)</li>
+          </ul>
+        </div>
+        <div class="video-card">
+          <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+            <div class="video-play">▶</div>
+            <div class="video-thumb-label">How to Structure Your Repo</div>
+          </div>
+          <div class="video-meta">
+            <div class="video-icon">📹</div>
+            <div>
+              <div class="video-title">How to Structure Your Repo</div>
+              <div class="video-duration">~12 min</div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:1rem">
+          <div class="resource-grid" style="grid-template-columns:1fr">
+            <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/best-practices-for-repositories" target="_blank" class="resource-card">
+              <div class="resource-icon">⭐</div>
+              <div>
+                <div class="resource-title">GitHub Repo Best Practices</div>
+                <div class="resource-desc">Official GitHub guide on structuring repositories for maintainability.</div>
+                <div class="resource-tag">github</div>
+              </div>
+            </a>
+            <a href="https://www.makeareadme.com/" target="_blank" class="resource-card">
+              <div class="resource-icon">📄</div>
+              <div>
+                <div class="resource-title">Make a README</div>
+                <div class="resource-desc">Template and guidance for writing READMEs that actually communicate.</div>
+                <div class="resource-tag">tool</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── API DESIGN ──────────────────────────────────────────────── -->
+<section id="api">
+  <div class="container">
+    <div class="section-label">Module 05</div>
+    <h2 class="section-title">API Design in Practice</h2>
+    <p class="section-desc">An API is a promise. Define the contract precisely. A consumer should know exactly what to send and exactly what to expect — for success and failure.</p>
+
+    <div class="two-col">
+      <div>
+        <div style="margin-bottom:0.5rem;font-family:var(--mono);font-size:0.7rem;color:var(--muted)">Endpoint Contract</div>
+        <div class="code-block-wrap">
+          <pre><span class="code-comment"># POST /api/tasks</span>
+<span class="code-comment"># Creates a new task</span>
+
+<span class="code-comment"># Request Body:</span>
+{
+  <span class="code-str">"title"</span>:   string  <span class="code-comment"># required, 1-200 chars</span>
+  <span class="code-str">"dueDate"</span>: string  <span class="code-comment"># optional, ISO 8601</span>
+  <span class="code-str">"status"</span>:  string  <span class="code-comment"># enum: pending|in_progress</span>
+}
+
+<span class="code-comment"># Success Response (201):</span>
+{
+  <span class="code-str">"id"</span>:     <span class="code-str">"uuid"</span>,
+  <span class="code-str">"status"</span>: <span class="code-str">"created"</span>
+}
+
+<span class="code-comment"># Error Response (400):</span>
+{
+  <span class="code-str">"error"</span>:  <span class="code-str">"INVALID_INPUT"</span>,
+  <span class="code-str">"field"</span>:  <span class="code-str">"title"</span>,
+  <span class="code-str">"detail"</span>: <span class="code-str">"title is required"</span>
+}</pre>
+          <div class="code-label">contract</div>
+        </div>
+        <div style="margin-top:1rem;margin-bottom:0.5rem;font-family:var(--mono);font-size:0.7rem;color:var(--muted)">Implementation</div>
+        <div class="code-block-wrap">
+          <pre><span class="code-kw">def</span> <span class="code-fn">create_task</span>(request_json):
+    title = request_json.get(<span class="code-str">"title"</span>)
+    <span class="code-kw">if not</span> title <span class="code-kw">or not</span> isinstance(title, str):
+        <span class="code-kw">return</span> {
+            <span class="code-str">"error"</span>:  <span class="code-str">"INVALID_INPUT"</span>,
+            <span class="code-str">"field"</span>:  <span class="code-str">"title"</span>,
+            <span class="code-str">"detail"</span>: <span class="code-str">"title is required"</span>
+        }, <span class="code-num">400</span>
+    task_id = save_task(title.strip())
+    <span class="code-kw">return</span> {<span class="code-str">"id"</span>: task_id, <span class="code-str">"status"</span>: <span class="code-str">"created"</span>}, <span class="code-num">201</span></pre>
+          <div class="code-label">python</div>
+        </div>
+      </div>
+      <div>
+        <div class="video-card" style="margin-bottom:1rem">
+          <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+            <div class="video-play">▶</div>
+            <div class="video-thumb-label">Designing APIs Correctly</div>
+          </div>
+          <div class="video-meta">
+            <div class="video-icon">📹</div>
+            <div>
+              <div class="video-title">Designing APIs Correctly</div>
+              <div class="video-duration">~20 min</div>
+            </div>
+          </div>
+        </div>
+        <div class="resource-grid" style="grid-template-columns:1fr">
+          <a href="https://restfulapi.net/http-status-codes/" target="_blank" class="resource-card">
+            <div class="resource-icon">🔢</div>
+            <div>
+              <div class="resource-title">HTTP Status Codes Reference</div>
+              <div class="resource-desc">Complete reference for every HTTP status code, with usage guidelines.</div>
+              <div class="resource-tag">reference</div>
+            </div>
+          </a>
+          <a href="https://jsonapi.org/" target="_blank" class="resource-card">
+            <div class="resource-icon">📦</div>
+            <div>
+              <div class="resource-title">JSON:API Specification</div>
+              <div class="resource-desc">Standard for JSON API response formats — consistent error and data shapes.</div>
+              <div class="resource-tag">standard</div>
+            </div>
+          </a>
+          <a href="https://google.aip.dev/general" target="_blank" class="resource-card">
+            <div class="resource-icon">🏢</div>
+            <div>
+              <div class="resource-title">Google API Improvement Proposals</div>
+              <div class="resource-desc">Google's internal API design guidelines, published for general use.</div>
+              <div class="resource-tag">guide</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TDD ────────────────────────────────────────────────────── -->
+<section id="tdd">
+  <div class="container">
+    <div class="section-label">Module 06</div>
+    <h2 class="section-title">TDD in Practice — Full Stack</h2>
+    <p class="section-desc">Follow the Red → Green → Refactor cycle. Every function starts with a failing test. These are not optional.</p>
+
+    <div class="two-col">
+      <div>
+        <div style="margin-bottom:0.5rem;font-family:var(--mono);font-size:0.7rem;color:var(--red)">🔴 Step 1: Write the Failing Test</div>
+        <div class="code-block-wrap">
+          <pre><span class="code-kw">def</span> <span class="code-fn">test_calculate_total_price</span>():
+    items = [{<span class="code-str">"price"</span>: <span class="code-num">100</span>, <span class="code-str">"quantity"</span>: <span class="code-num">2</span>}]
+    result = calculate_total_price(items, <span class="code-num">0.1</span>)
+    <span class="code-kw">assert</span> result == <span class="code-num">180</span>
+
+<span class="code-kw">def</span> <span class="code-fn">test_invalid_price_raises</span>():
+    items = [{<span class="code-str">"price"</span>: <span class="code-num">-10</span>, <span class="code-str">"quantity"</span>: <span class="code-num">1</span>}]
+    <span class="code-kw">with</span> pytest.raises(ValueError):
+        calculate_total_price(items, <span class="code-num">0</span>)</pre>
+          <div class="code-label">test · red</div>
+        </div>
+
+        <div style="margin:1rem 0 0.5rem;font-family:var(--mono);font-size:0.7rem;color:var(--accent3)">🟢 Step 2: Minimal Implementation</div>
+        <div class="code-block-wrap">
+          <pre><span class="code-kw">def</span> <span class="code-fn">calculate_total_price</span>(items, discount):
+    <span class="code-kw">if not</span> <span class="code-num">0</span> &lt;= discount &lt;= <span class="code-num">1</span>:
+        <span class="code-kw">raise</span> ValueError(<span class="code-str">"Invalid discount"</span>)
+    total = <span class="code-num">0</span>
+    <span class="code-kw">for</span> item <span class="code-kw">in</span> items:
+        <span class="code-kw">if</span> item[<span class="code-str">"price"</span>] &lt; <span class="code-num">0</span> <span class="code-kw">or</span> item[<span class="code-str">"quantity"</span>] &lt;= <span class="code-num">0</span>:
+            <span class="code-kw">raise</span> ValueError(<span class="code-str">"Invalid values"</span>)
+        total += item[<span class="code-str">"price"</span>] * item[<span class="code-str">"quantity"</span>]
+    <span class="code-kw">return</span> int(total * (<span class="code-num">1</span> - discount))</pre>
+          <div class="code-label">impl · green</div>
+        </div>
+      </div>
+      <div>
+        <div class="video-card" style="margin-bottom:1rem">
+          <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+            <div class="video-play">▶</div>
+            <div class="video-thumb-label">TDD for Backend Systems</div>
+          </div>
+          <div class="video-meta">
+            <div class="video-icon">📹</div>
+            <div>
+              <div class="video-title">TDD for Backend Systems</div>
+              <div class="video-duration">~25 min</div>
+            </div>
+          </div>
+        </div>
+        <div class="resource-grid" style="grid-template-columns:1fr">
+          <a href="https://www.agilealliance.org/glossary/tdd/" target="_blank" class="resource-card">
+            <div class="resource-icon">🔁</div>
+            <div>
+              <div class="resource-title">TDD — Agile Alliance Glossary</div>
+              <div class="resource-desc">Authoritative definition and practice guide from the Agile Alliance.</div>
+              <div class="resource-tag">reference</div>
+            </div>
+          </a>
+          <a href="https://docs.pytest.org/en/stable/" target="_blank" class="resource-card">
+            <div class="resource-icon">🧪</div>
+            <div>
+              <div class="resource-title">pytest Documentation</div>
+              <div class="resource-desc">The standard Python testing framework — fixtures, parametrize, coverage.</div>
+              <div class="resource-tag">tool</div>
+            </div>
+          </a>
+          <a href="https://vitest.dev/" target="_blank" class="resource-card">
+            <div class="resource-icon">⚡</div>
+            <div>
+              <div class="resource-title">Vitest — Frontend Testing</div>
+              <div class="resource-desc">Fast, Vite-native unit test framework for JavaScript/TypeScript projects.</div>
+              <div class="resource-tag">tool</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PR REVIEW ──────────────────────────────────────────────── -->
+<section id="pr">
+  <div class="container">
+    <div class="section-label">Module 07</div>
+    <h2 class="section-title">PR Review Simulation</h2>
+    <p class="section-desc">Learn to identify the most common categories of issues in real pull requests. Every issue below represents a class of bug that ships to production.</p>
+
+    <div class="two-col">
+      <div>
+        <div style="margin-bottom:0.5rem;font-family:var(--mono);font-size:0.7rem;color:var(--muted)">Code Under Review</div>
+        <div class="code-block-wrap">
+          <pre>VALID_STATUSES = [<span class="code-str">"pending"</span>, <span class="code-str">"in_progress"</span>, <span class="code-str">"completed"</span>]
+
+<span class="code-kw">def</span> <span class="code-fn">update_task_status</span>(task_id, status):
+    task = fetch_task(task_id)           <span class="code-bad"># ① no null check</span>
+    task[<span class="code-str">"status"</span>] = status              <span class="code-bad"># ② no status validation</span>
+    update_task(task)
+    <span class="code-kw">return</span> task                          <span class="code-bad"># ③ no HTTP code</span>
+
+<span class="code-kw">def</span> <span class="code-fn">process_order</span>(order):
+    total = <span class="code-num">0</span>
+    <span class="code-kw">for</span> item <span class="code-kw">in</span> order[<span class="code-str">"items"</span>]:          <span class="code-bad"># ④ KeyError if missing</span>
+        total += item[<span class="code-str">"price"</span>] * item[<span class="code-str">"qty"</span>]
+    <span class="code-kw">if</span> order.get(<span class="code-str">"discount"</span>):
+        total -= total * order[<span class="code-str">"discount"</span>]  <span class="code-bad"># ⑤ no range check</span>
+    <span class="code-kw">return</span> total</pre>
+          <div class="code-label">python · issues flagged</div>
+        </div>
+      </div>
+      <div>
+        <div style="margin-bottom:0.8rem;font-family:var(--mono);font-size:0.7rem;color:var(--muted)">Issues Identified</div>
+        <div class="pr-issue error">
+          <div class="pr-issue-icon">🔴</div>
+          <div class="pr-issue-text">
+            <strong>① Missing null check on fetch_task()</strong>
+            <span>If task_id doesn't exist, fetch_task() returns None. Calling None["status"] raises TypeError in production.</span>
+          </div>
+        </div>
+        <div class="pr-issue error">
+          <div class="pr-issue-icon">🔴</div>
+          <div class="pr-issue-text">
+            <strong>② Status not validated against VALID_STATUSES</strong>
+            <span>Any arbitrary string can be written to status. The constant VALID_STATUSES is defined but never used.</span>
+          </div>
+        </div>
+        <div class="pr-issue warn">
+          <div class="pr-issue-icon">🟡</div>
+          <div class="pr-issue-text">
+            <strong>③ API contract mismatch — no HTTP status code</strong>
+            <span>Returning a raw dict without a status code violates the REST contract. Success should be 200, not-found 404.</span>
+          </div>
+        </div>
+        <div class="pr-issue warn">
+          <div class="pr-issue-icon">🟡</div>
+          <div class="pr-issue-text">
+            <strong>④ KeyError if order["items"] is missing</strong>
+            <span>Direct key access on unvalidated input. Use .get() with a default or validate at the boundary.</span>
+          </div>
+        </div>
+        <div class="pr-issue info">
+          <div class="pr-issue-icon">🔵</div>
+          <div class="pr-issue-text">
+            <strong>⑤ Discount has no range validation</strong>
+            <span>A discount of 1.5 would produce a negative total. Validate: 0 ≤ discount ≤ 1 before applying.</span>
+          </div>
+        </div>
+        <div class="video-card" style="margin-top:1rem">
+          <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+            <div class="video-play">▶</div>
+            <div class="video-thumb-label">How to Review Code Like a Senior Engineer</div>
+          </div>
+          <div class="video-meta">
+            <div class="video-icon">📹</div>
+            <div>
+              <div class="video-title">How to Review Code Like a Senior Engineer</div>
+              <div class="video-duration">~21 min</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="resource-grid" style="margin-top:1.5rem">
+      <a href="https://google.github.io/eng-practices/review/reviewer/" target="_blank" class="resource-card">
+        <div class="resource-icon">🔎</div>
+        <div>
+          <div class="resource-title">How to Do a Code Review — Google</div>
+          <div class="resource-desc">Google's reviewer guide: what to look for, how to comment, when to approve.</div>
+          <div class="resource-tag">guide</div>
+        </div>
+      </a>
+      <a href="https://www.pullrequest.com/blog/code-review-best-practices/" target="_blank" class="resource-card">
+        <div class="resource-icon">📋</div>
+        <div>
+          <div class="resource-title">Code Review Best Practices</div>
+          <div class="resource-desc">Practical checklist-based approach to consistent, constructive code review.</div>
+          <div class="resource-tag">best practices</div>
+        </div>
+      </a>
+      <a href="https://mtlynch.io/code-review-love/" target="_blank" class="resource-card">
+        <div class="resource-icon">❤</div>
+        <div>
+          <div class="resource-title">How to Make Your Code Reviewer Love You</div>
+          <div class="resource-desc">Author-side practices that make reviews faster and less contentious.</div>
+          <div class="resource-tag">article</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── AI USAGE GUIDE ─────────────────────────────────────────── -->
+<section id="ai-guide">
+  <div class="container">
+    <div class="section-label">Module 08</div>
+    <h2 class="section-title">AI Usage Guidelines</h2>
+    <p class="section-desc">Using AI tools effectively requires discipline. These rules are not suggestions — they are engineering standards for this program.</p>
+
+    <div class="do-dont">
+      <div class="do-card">
+        <h4>✓ DO</h4>
+        <ul>
+          <li>Use AI to generate test cases you then review</li>
+          <li>Ask AI to explain code you don't understand</li>
+          <li>Use AI to identify edge cases in your spec</li>
+          <li>Ask AI to critique your own implementation</li>
+          <li>Use AI to generate boilerplate you verify</li>
+          <li>Document every AI prompt you used in ai-usage-log.md</li>
+          <li>Use AI to suggest refactoring — then judge each suggestion</li>
+        </ul>
+      </div>
+      <div class="dont-card">
+        <h4>✗ DON'T</h4>
+        <ul>
+          <li>Accept AI output you cannot explain line-by-line</li>
+          <li>Skip tests because AI generated the implementation</li>
+          <li>Copy-paste without understanding what it does</li>
+          <li>Use AI to skip the spec-formation step</li>
+          <li>Assume AI output is correct without verification</li>
+          <li>Hide AI usage — always disclose in your PR</li>
+          <li>Let AI make architectural decisions for you</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:1.5rem">
+      <div class="video-card">
+        <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+          <div class="video-play">▶</div>
+          <div class="video-thumb-label">Using AI Effectively for Development</div>
+        </div>
+        <div class="video-meta">
+          <div class="video-icon">📹</div>
+          <div>
+            <div class="video-title">Using AI Effectively for Development</div>
+            <div class="video-duration">~17 min</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="resource-grid" style="grid-template-columns:1fr">
+          <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" class="resource-card">
+            <div class="resource-icon">🧠</div>
+            <div>
+              <div class="resource-title">Prompt Engineering Overview — Anthropic</div>
+              <div class="resource-desc">Best practices for getting reliable, accurate responses from Claude.</div>
+              <div class="resource-tag">official</div>
+            </div>
+          </a>
+          <a href="https://www.promptingguide.ai/techniques" target="_blank" class="resource-card">
+            <div class="resource-icon">⚗</div>
+            <div>
+              <div class="resource-title">Prompting Techniques — DAIR.AI</div>
+              <div class="resource-desc">Chain-of-thought, few-shot, and other techniques with research citations.</div>
+              <div class="resource-tag">research</div>
+            </div>
+          </a>
+          <a href="https://github.com/brexhq/prompt-engineering" target="_blank" class="resource-card">
+            <div class="resource-icon">📖</div>
+            <div>
+              <div class="resource-title">Prompt Engineering Guide — Brex</div>
+              <div class="resource-desc">Engineering-team-focused guide on practical prompt patterns for developers.</div>
+              <div class="resource-tag">engineering</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROMPT LIBRARY ─────────────────────────────────────────── -->
+<section id="prompts">
+  <div class="container">
+    <div class="section-label">Module 09</div>
+    <h2 class="section-title">Prompt Library</h2>
+    <p class="section-desc">High-quality prompts produce high-quality output. Use these as starting points and refine them for your specific context.</p>
+
+    <div class="prompt-tabs">
+      <button class="tab-btn active" onclick="showTab('api-design',this)">API Design</button>
+      <button class="tab-btn" onclick="showTab('testing',this)">Testing</button>
+      <button class="tab-btn" onclick="showTab('refactoring',this)">Refactoring</button>
+      <button class="tab-btn" onclick="showTab('debugging',this)">Debugging</button>
+      <button class="tab-btn" onclick="showTab('review',this)">Code Review</button>
+    </div>
+
+    <div id="tab-api-design" class="prompt-panel active">
+      <div class="prompt-item">
+        <div class="prompt-item-text">"Design a REST API for [describe feature]. Include: endpoint paths with HTTP methods, request body schema with types, success and error response shapes, HTTP status codes for each case, and all validation rules. Output as OpenAPI 3.0 YAML."</div>
+        <button class="prompt-copy" onclick="copyPrompt('tab-api-design-1',this)" data-text="Design a REST API for [describe feature]. Include: endpoint paths with HTTP methods, request body schema with types, success and error response shapes, HTTP status codes for each case, and all validation rules. Output as OpenAPI 3.0 YAML.">⎘</button>
+      </div>
+      <div class="prompt-item">
+        <div class="prompt-item-text">"Review this API contract for inconsistencies: [paste contract]. Check: HTTP verb correctness, idempotency of PUT vs POST, error format consistency, missing status codes, and any violations of REST conventions."</div>
+        <button class="prompt-copy" onclick="copyPrompt('tab-api-design-2',this)" data-text="Review this API contract for inconsistencies: [paste contract]. Check: HTTP verb correctness, idempotency of PUT vs POST, error format consistency, missing status codes, and any violations of REST conventions.">⎘</button>
+      </div>
+      <div class="prompt-item">
+        <div class="prompt-item-text">"Given this data model: [paste model]. Generate the complete REST API spec for CRUD operations including pagination, filtering, and sort parameters. Document which fields are required vs optional."</div>
+        <button class="prompt-copy" onclick="copyPrompt('tab-api-design-3',this)" data-text="Given this data model: [paste model]. Generate the complete REST API spec for CRUD operations including pagination, filtering, and sort parameters. Document which fields are required vs optional.">⎘</button>
+      </div>
+    </div>
+
+    <div id="tab-testing" class="prompt-panel">
+      <div class="prompt-item">
+        <div class="prompt-item-text">"Generate comprehensive pytest test cases for this function: [paste function signature and docstring]. Include: happy path, boundary values, null/empty inputs, invalid types, and business rule violations. Do NOT implement the function — tests only."</div>
+        <button class="prompt-copy" data-text="Generate comprehensive pytest test cases for this function: [paste function signature and docstring]. Include: happy path, boundary values, null/empty inputs, invalid types, and business rule violations. Do NOT implement the function — tests only." onclick="copyText(this.dataset.text,this)">⎘</button>
+      </div>
+      <div class="prompt-item">
+        <div class="prompt-item-text">"Review this test suite for quality: [paste tests]. Identify: missing edge cases, weak assertions (e.g. assertTrue vs assertEqual), test interdependencies, missing negative tests, and cases that don't actually verify the contract."</div>
+        <button class="prompt-copy" data-text="Review this test suite for quality: [paste tests]. Identify: missing edge cases, weak assertions (e.g. assertTrue vs assertEqual), test interdependencies, missing negative tests, and cases that don't actually verify the contract." onclick="copyText(this.dataset.text,this)">⎘</button>
+      </div>
+      <div class="prompt-item">
+        <div class="prompt-item-text">"Given this API endpoint: [paste spec]. Write integration tests that verify: correct status codes, response shape validation, validation rejection cases, and database state after mutation operations."</div>
+        <button class="prompt-copy" data-text="Given this API endpoint: [paste spec]. Write integration tests that verify: correct status codes, response shape validation, validation rejection cases, and database state after mutation operations." onclick="copyText(this.dataset.text,this)">⎘</button>
+      </div>
+    </div>
+
+    <div id="tab-refactoring" class="prompt-panel">
+      <div class="prompt-item">
+        <div class="prompt-item-text">"Refactor this function for clarity and maintainability: [paste code]. Constraints: do not change behaviour, do not reduce test coverage, prefer small focused functions, improve naming. Explain each change you make."</div>
+        <button class="prompt-copy" data-text="Refactor this function for clarity and maintainability: [paste code]. Constraints: do not change behaviour, do not reduce test coverage, prefer small focused functions, improve naming. Explain each change you make." onclick="copyText(this.dataset.text,this)">⎘</button>
+      </div>
+      <div class="prompt-item">
+        <div class="prompt-item-text">"Identify code smells in this module: [paste module]. Reference: long methods, deep nesting, magic numbers, repeated logic, unclear naming. For each smell, explain the problem and suggest the refactoring pattern."</div>
+        <button class="prompt-copy" data-text="Identify code smells in this module: [paste module]. Reference: long methods, deep nesting, magic numbers, repeated logic, unclear naming. For each smell, explain the problem and suggest the refactoring pattern." onclick="copyText(this.dataset.text,this)">⎘</button>
+      </div>
+    </div>
+
+    <div id="tab-debugging" class="prompt-panel">
+      <div class="prompt-item">
+        <div class="prompt-item-text">"I have a bug: [describe symptom]. Here is the relevant code: [paste code]. Here is the error or unexpected output: [paste]. Trace the execution path and identify the root cause. Do not give me the fix first — explain what is wrong and why."</div>
+        <button class="prompt-copy" data-text="I have a bug: [describe symptom]. Here is the relevant code: [paste code]. Here is the error or unexpected output: [paste]. Trace the execution path and identify the root cause. Do not give me the fix first — explain what is wrong and why." onclick="copyText(this.dataset.text,this)">⎘</button>
+      </div>
+      <div class="prompt-item">
+        <div class="prompt-item-text">"This test is failing: [paste test + error]. Here is the implementation: [paste]. Identify why the test fails without changing the test. If the test itself is wrong, explain why. Do not rewrite the implementation unless the test logic is clearly correct."</div>
+        <button class="prompt-copy" data-text="This test is failing: [paste test + error]. Here is the implementation: [paste]. Identify why the test fails without changing the test. If the test itself is wrong, explain why. Do not rewrite the implementation unless the test logic is clearly correct." onclick="copyText(this.dataset.text,this)">⎘</button>
+      </div>
+    </div>
+
+    <div id="tab-review" class="prompt-panel">
+      <div class="prompt-item">
+        <div class="prompt-item-text">"Review this pull request diff as a strict senior engineer: [paste diff]. Check for: missing validation, API contract violations, error handling gaps, performance anti-patterns, missing tests, unclear naming. Give line-specific comments."</div>
+        <button class="prompt-copy" data-text="Review this pull request diff as a strict senior engineer: [paste diff]. Check for: missing validation, API contract violations, error handling gaps, performance anti-patterns, missing tests, unclear naming. Give line-specific comments." onclick="copyText(this.dataset.text,this)">⎘</button>
+      </div>
+      <div class="prompt-item">
+        <div class="prompt-item-text">"Evaluate this PR description: [paste PR body]. Does it explain: what changed, why it changed, what was tested, what could break? Identify what's missing and suggest improvements. A PR description is a document, not a commit message."</div>
+        <button class="prompt-copy" data-text="Evaluate this PR description: [paste PR body]. Does it explain: what changed, why it changed, what was tested, what could break? Identify what's missing and suggest improvements. A PR description is a document, not a commit message." onclick="copyText(this.dataset.text,this)">⎘</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DEPLOYMENT ─────────────────────────────────────────────── -->
+<section id="deployment">
+  <div class="container">
+    <div class="section-label">Module 10</div>
+    <h2 class="section-title">Deployment Awareness</h2>
+    <p class="section-desc">Code that can't be deployed isn't finished. Every engineer must understand the path from commit to production, even if they don't own the pipeline.</p>
+
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">💻</div>
+        <div class="pipeline-step-label">commit</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">🔀</div>
+        <div class="pipeline-step-label">PR merge</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">🏗</div>
+        <div class="pipeline-step-label">CI build</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">🧪</div>
+        <div class="pipeline-step-label">test suite</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">🎯</div>
+        <div class="pipeline-step-label">staging</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">🚀</div>
+        <div class="pipeline-step-label">production</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-icon">📊</div>
+        <div class="pipeline-step-label">monitor</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div class="card" style="margin-bottom:0.8rem">
+          <div class="badge badge-amber" style="margin-bottom:0.6rem">Environment Config</div>
+          <div class="code-block-wrap">
+            <pre><span class="code-kw">import</span> os
+DB_HOST = os.getenv(<span class="code-str">"DB_HOST"</span>)
+<span class="code-kw">if not</span> DB_HOST:
+    <span class="code-kw">raise</span> RuntimeError(<span class="code-str">"Missing DB config"</span>)
+
+<span class="code-comment"># Never hardcode credentials.</span>
+<span class="code-comment"># All env vars must be documented.</span></pre>
+            <div class="code-label">python</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="badge badge-teal" style="margin-bottom:0.6rem">What to Monitor</div>
+          <ul style="font-size:0.82rem;color:var(--muted);display:flex;flex-direction:column;gap:0.4rem">
+            <li style="display:flex;gap:0.5rem"><span style="color:var(--accent2)">▸</span> Error rate and 5xx response rate</li>
+            <li style="display:flex;gap:0.5rem"><span style="color:var(--accent2)">▸</span> Latency (p50, p95, p99)</li>
+            <li style="display:flex;gap:0.5rem"><span style="color:var(--accent2)">▸</span> Structured logs with request IDs</li>
+            <li style="display:flex;gap:0.5rem"><span style="color:var(--accent2)">▸</span> Alerting on critical paths</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="video-card" style="margin-bottom:1rem">
+          <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+            <div class="video-play">▶</div>
+            <div class="video-thumb-label">From Code to Production</div>
+          </div>
+          <div class="video-meta">
+            <div class="video-icon">📹</div>
+            <div>
+              <div class="video-title">From Code to Production</div>
+              <div class="video-duration">~24 min</div>
+            </div>
+          </div>
+        </div>
+        <div class="resource-grid" style="grid-template-columns:1fr">
+          <a href="https://docs.github.com/en/actions" target="_blank" class="resource-card">
+            <div class="resource-icon">⚙</div>
+            <div>
+              <div class="resource-title">GitHub Actions Documentation</div>
+              <div class="resource-desc">Build CI/CD pipelines directly in your repository with YAML workflows.</div>
+              <div class="resource-tag">ci/cd</div>
+            </div>
+          </a>
+          <a href="https://12factor.net/config" target="_blank" class="resource-card">
+            <div class="resource-icon">🔧</div>
+            <div>
+              <div class="resource-title">12-Factor Config — Environment Variables</div>
+              <div class="resource-desc">The correct model for separating config from code in deployable services.</div>
+              <div class="resource-tag">methodology</div>
+            </div>
+          </a>
+          <a href="https://opentelemetry.io/docs/" target="_blank" class="resource-card">
+            <div class="resource-icon">📡</div>
+            <div>
+              <div class="resource-title">OpenTelemetry Documentation</div>
+              <div class="resource-desc">Vendor-neutral observability framework: traces, metrics, and logs.</div>
+              <div class="resource-tag">observability</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CHECKLIST ──────────────────────────────────────────────── -->
+<section id="checklist">
+  <div class="container">
+    <div class="section-label">Module 11</div>
+    <h2 class="section-title">Final Submission Checklist</h2>
+    <p class="section-desc">Every item on this list must be satisfied before your project is considered complete. Click to mark items — aim for 100%.</p>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-label" id="progressLabel">0 / 16 complete</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div class="checklist" style="margin-top:1.5rem" id="checklistGrid">
+
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">Problem Statement written<span>Clearly states the problem, user, and success criteria</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">Technical spec defined<span>Inputs, outputs, validation rules, and edge cases documented</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">API contract documented<span>All endpoints, schemas, and status codes defined before coding</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">Data models defined<span>Schema, types, constraints, and relationships documented</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">Tests written before implementation<span>TDD followed — failing tests exist before any production code</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">All tests pass<span>No skipped or commented-out tests in the final submission</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">Edge cases covered<span>Null inputs, boundary values, invalid types tested</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">Input validation at API boundary<span>No unvalidated user input reaches service or database layer</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">Error responses are consistent<span>All errors return structured JSON with error code and detail</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">No hardcoded credentials or config<span>All environment config via environment variables</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">Code reviewed by yourself first<span>You have read your own diff and removed all obvious issues</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">PR description complete<span>Summary, system impact, test strategy, and checklist filled in</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">AI usage log complete<span>Every AI prompt used is documented with what was accepted/rejected</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">README complete<span>Contains all six required sections</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">Repo structure follows template<span>/frontend, /backend, /tests, /docs all present</span></div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-box">✓</div>
+        <div class="check-text">No breaking changes to existing tests<span>All pre-existing tests continue to pass after your changes</span></div>
+      </div>
+
+    </div>
+
+    <div class="two-col" style="margin-top:1.5rem">
+      <div class="video-card">
+        <div class="video-thumb" onclick="this.innerHTML='<div style=\'color:var(--accent);font-family:var(--mono);font-size:0.8rem;text-align:center;padding:2rem\'>▶ Video would play here</div>'">
+          <div class="video-play">▶</div>
+          <div class="video-thumb-label">Before You Submit Your Project</div>
+        </div>
+        <div class="video-meta">
+          <div class="video-icon">📹</div>
+          <div>
+            <div class="video-title">Before You Submit Your Project</div>
+            <div class="video-duration">~10 min</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center">
+        <div class="card" style="width:100%">
+          <div class="badge badge-amber" style="margin-bottom:0.8rem">PR Template (Markdown)</div>
+          <div class="code-block-wrap">
+            <pre style="font-size:0.75rem"><span class="code-comment">## Summary</span>
+Describe technical changes
+
+<span class="code-comment">## System Impact</span>
+- [ ] Frontend  - [ ] Backend  - [ ] DB
+
+<span class="code-comment">## Test Strategy</span>
+- [ ] Tests written first
+
+<span class="code-comment">## AI Usage</span>
+- Tools used:
+- Verified:
+
+<span class="code-comment">## Checklist</span>
+- [ ] Self-review done
+- [ ] No breaking changes</pre>
+            <div class="code-label">markdown</div>
+          </div>
+          <button class="prompt-copy" style="margin-top:0.8rem" onclick="copyText('## Summary\nDescribe technical changes\n\n## System Impact\n- [ ] Frontend  - [ ] Backend  - [ ] DB\n\n## Test Strategy\n- [ ] Tests written first\n\n## AI Usage\n- Tools used:\n- Verified:\n\n## Checklist\n- [ ] Self-review done\n- [ ] No breaking changes',this)">⎘ Copy PR Template</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─────────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <p>AI-Assisted Full-Stack Developer Induction · <span>v2</span> · Built for disciplined engineering</p>
+    <p style="margin-top:0.4rem">Questions or feedback? Raise an issue in the induction repository.</p>
+  </div>
+</footer>
+
+<div class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+<script>
+/* ─── LIFECYCLE STEPS ─────────────────── */
+const lifecycleData = [
+  { num:'01', title:'Problem Definition', body:'Before any code is written, the problem must be clearly stated. Who is the user? What is the pain? What does success look like? This step produces a Problem Statement that every subsequent decision is tested against. If you can\'t explain the problem in two sentences, you don\'t understand it well enough to build it.' },
+  { num:'02', title:'Spec Formation', body:'A spec converts the problem into engineering constraints. Define: what data comes in, what comes out, what rules apply, and what counts as failure. A good spec makes implementation obvious and prevents scope creep. Write it before opening your editor.' },
+  { num:'03', title:'API Design', body:'With the spec defined, design the API contract. Endpoints, request shapes, response shapes, status codes, and error formats. API design is a negotiation between frontend and backend — resolve it on paper before writing code.' },
+  { num:'04', title:'Implementation', body:'Now and only now do you write production code. Implement against the spec and API contract. Write small, focused functions. Validate at the boundary. Handle errors explicitly. The spec is your arbiter — if your code diverges from the spec, the spec wins.' },
+  { num:'05', title:'Testing', body:'Tests are written before, during, and after implementation — but primarily before. TDD ensures you always know what you\'re building and when you\'re done. Test the contract, not the implementation. Unit test business logic, integration test the API, end-to-end test critical paths.' },
+  { num:'06', title:'Deployment', body:'Deployment is not the end — it is the beginning of production ownership. Understand your CI/CD pipeline, environment configuration, and rollback procedure. Never deploy without all tests passing. Never hardcode credentials. Always use environment variables.' },
+  { num:'07', title:'Monitoring', body:'Production is the only environment that tells the truth. Instrument your service: structured logs, error rates, latency percentiles. Set alerts on what matters. Know how to read logs when something breaks. Monitoring is not optional — it\'s how you know the system is doing what you think it is.' }
+];
+
+function setLifecycle(idx) {
+  document.querySelectorAll('.lifecycle-step').forEach((s,i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  const d = lifecycleData[idx];
+  const el = document.getElementById('lifecycleDetail');
+  el.innerHTML = `<h4>${d.num} · ${d.title}</h4><p>${d.body}</p>`;
+  el.classList.add('show');
+}
+
+/* ─── STEPPER ─────────────────────────── */
+function toggleStep(dotEl) {
+  const item = dotEl.closest('.step-item');
+  const isOpen = item.classList.contains('open');
+  item.classList.toggle('open', !isOpen);
+}
+
+/* ─── TABS ────────────────────────────── */
+function showTab(id, btn) {
+  document.querySelectorAll('.prompt-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ─── COPY HELPERS ───────────────────── */
+function copyPrompt(id, btn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  copyText(el.textContent, btn);
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text.trim()).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text.trim();
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+/* ─── COPY TEMPLATE ──────────────────── */
+function copyTemplate(btn) {
+  const tpl = `my-project/
+├── frontend/
+│   ├── src/
+│   └── public/
+├── backend/
+│   ├── api/
+│   ├── services/
+│   └── models/
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   └── e2e/
+├── docs/
+│   ├── problem-statement.md
+│   ├── system-design.md
+│   ├── api-contracts.md
+│   ├── data-models.md
+│   ├── test-strategy.md
+│   └── ai-usage-log.md
+└── README.md`;
+  copyText(tpl, btn);
+}
+
+/* ─── CHECKLIST ──────────────────────── */
+function toggleCheck(item) {
+  item.classList.toggle('checked');
+  updateProgress();
+}
+function updateProgress() {
+  const all = document.querySelectorAll('.check-item');
+  const done = document.querySelectorAll('.check-item.checked').length;
+  const pct = Math.round((done / all.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${done} / ${all.length} complete`;
+}
+
+/* ─── THEME TOGGLE ────────────────────── */
+function toggleTheme() {
+  const html = document.documentElement;
+  const isLight = html.getAttribute('data-theme') === 'light';
+  const next = isLight ? 'dark' : 'light';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateToggleLabel(next);
+}
+function updateToggleLabel(theme) {
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  const icon = btn.querySelector('.toggle-icon');
+  const label = btn.querySelector('.toggle-label');
+  if (theme === 'light') {
+    icon.textContent = '☽';
+    label.textContent = 'Dark';
+  } else {
+    icon.textContent = '☀';
+    label.textContent = 'Light';
+  }
+}
+/* Apply saved theme on load — no flash */
+(function() {
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  updateToggleLabel(saved);
+})();
+
+/* ─── SCROLL TOP ──────────────────────── */
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('scrollTop');
+  el.classList.toggle('show', window.scrollY > 600);
+});
+
+/* ─── NAV ACTIVE ──────────────────────── */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

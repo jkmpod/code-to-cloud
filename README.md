@@ -10,7 +10,7 @@ An interactive, scrollytelling tutorial covering everything a novice developer n
 
 ---
 
-## What's covered
+## What's covered in code-to-cloud
 
 | Chapter | Topic |
 |---------|-------|
@@ -28,11 +28,33 @@ An interactive, scrollytelling tutorial covering everything a novice developer n
 
 Each chapter includes an embedded YouTube video and curated external resources.
 
+## Developer Induction Program
+
+The repository also hosts a companion **AI-Assisted Full-Stack Developer Induction** program — an interactive onboarding hub for new developers joining the team.
+
+**🌐 Live:** `https://jkmpod.github.io/code-to-cloud/induction/`
+
+### What the induction unit covers
+
+| # | Module | Core Skill |
+|---|--------|-----------|
+| 01 | Full-Stack Thinking | Systems over features; the UI→API→Service→DB flow |
+| 02 | System Lifecycle | Problem → Spec → API → Implement → Test → Deploy → Monitor |
+| 03 | Learning Workflow | 7-step engineering process with expand/collapse stepper |
+| 04 | GitHub Template | Repo structure, docs, AI usage log |
+| 05 | API Design | Contracts, validation rules, structured errors |
+| 06 | TDD in Practice | Red → Green → Refactor with full worked examples |
+| 07 | PR Review Simulation | Annotated broken code; four classes of issues |
+| 08 | AI Usage Guidelines | Do / Don't rules; mandatory disclosure |
+| 09 | Prompt Library | Reusable prompts for API design, testing, debugging, review |
+| 10 | Deployment Awareness | CI/CD, env config, monitoring |
+| 11 | Final Checklist | 16-point self-assessment before submission |
+
 ---
 
 ## Running locally
 
-No build step needed — it's a single static HTML file.
+No build step needed — it's a set of static HTML files.
 
 ```bash
 # Clone the repo
@@ -74,18 +96,31 @@ If you prefer not to use Actions, you can also set Source to **Deploy from a bra
 ## Repository structure
 
 ```
-code-to-cloud/
-├── index.html              # The entire tutorial (single-file)
+code-to-cloud/ 
 ├── README.md               # This file
 ├── LICENSE                 # MIT License
 ├── CONTRIBUTING.md         # How to contribute
 ├── CONTRIBUTORS.md         # Credits and acknowledgements
+├── index.html              # The code-to-cloud tutorial
+├── code-to-cloud
+│   └── CLAUDE.md
+├── induction/
+│   └── index.html          # AI-Assisted Developer Induction
+│   └── CLAUDE.md
+├── wiki/                   # Source for GitHub Wiki pages
+│   ├── Home.md
+│   ├── UI-UX-Design.md
+│   ├── Pedagogic-Design.md
+│   ├── Examples-Used.md
+│   └── Mini-Project-Idea.md
 ├── .gitignore              # Standard web project ignores
 └── .github/
     └── workflows/
-        └── deploy.yml      # GitHub Actions → GitHub Pages
+    │   └── deploy.yml      # GitHub Actions → GitHub Pages
+    └── ISSUE_TEMPLATE/
+        ├── feedback.yml    # Feedback on either program
+        └── content_suggestion.yml
 ```
-
 ---
 
 ## Customising for your team

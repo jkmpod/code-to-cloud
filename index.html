@@ -216,6 +216,15 @@ hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
 .feedback-btn:hover{background:var(--accent)}
 .feedback-btn .fb-icon{font-size:16px}
 </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-12462XDSMS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-12462XDSMS');
+</script>
 </head>
 <body>
 <div id="rbar"></div>
@@ -233,6 +242,7 @@ hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
     <button class="nav-ch" onclick="jump('s6b')">06b Linting</button>
     <button class="nav-ch" onclick="jump('s7')">07 CI/CD</button>
     <button class="nav-ch" onclick="jump('s8')">08 Checklist</button>
+    <button class="nav-ch" onclick="jump('s-next')">🎓 Next: AI Induction</button>
   </div>
 </nav>
 
@@ -1117,6 +1127,34 @@ hr{border:none;border-top:1px solid var(--rule);margin:36px 0}
     <div class="res-links">
       <a class="res-link" href="https://12factor.net" target="_blank" rel="noopener">The Twelve-Factor App</a>
       <a class="res-link" href="https://sre.google/sre-book/" target="_blank" rel="noopener">Google SRE Book</a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- NEXT: AI INDUCTION -->
+<section id="s-next">
+<div class="inner">
+  <div class="ch-label"><span class="ch-num">↗</span><span class="ch-rule"></span></div>
+  <h2>What comes<br><em>next</em></h2>
+  <p class="lede">You've covered the full journey from code to cloud. The next step is learning how to work effectively with AI tools as part of your development workflow.</p>
+
+  <div class="callout cs">
+    <div class="ct">✅ You're ready for this if…</div>
+    You've worked through all eight chapters here and feel comfortable with Git, Docker, and the basics of deploying to GCP. The AI Induction tutorial picks up from here.
+  </div>
+
+  <div class="card-grid" style="grid-template-columns:1fr">
+    <div class="card hl" style="padding:32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+      <div>
+        <div class="ct2" style="font-size:18px;margin-bottom:8px">🎓 AI-Assisted Developer Induction</div>
+        <div class="cb" style="font-size:15px;max-width:480px">How to work with AI tools effectively, responsibly, and as part of a real development team. Covers prompting, code review, limitations, and team workflows.</div>
+      </div>
+      <a href="/induction/index.html"
+         style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;padding:14px 28px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:opacity .2s"
+         onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+        Start the induction ↗
+      </a>
     </div>
   </div>
 </div>
